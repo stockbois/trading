@@ -4,6 +4,8 @@ from ibapi import wrapper
 from ibapi.client import EClient
 from ibapi.contract import Contract
 
+from common.watchlists.lev_sects import DirexionBulls as db
+
 
 TWS_PORT=int(os.getenv('TWS_PORT'))
 
@@ -29,24 +31,12 @@ class TestApp(TestWrapper, TestClient):
         print("Contract Details: ", reqId, " ", contractDetails)
 
 
-class Watchlist():
-    @staticmethod
-    def aapl():
-        contract = Contract()
-        contract.symbol = 'AAPL'
-        contract.secType = 'STK'
-        contract.exchange = 'SMART'
-        contract.currency = 'USD'
-        contract.primaryExchange = 'NASDAQ'
-        return contract
-
-
 def main():
     app = TestApp()
 
     app.connect(host='127.0.0.1', port=TWS_PORT, clientId=0)
 
-    app.reqContractDetails(1, Watchlist.aapl())
+    app.reqContractDetails(1, db.tawk())
 
     app.run()
 
