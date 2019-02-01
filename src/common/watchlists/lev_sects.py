@@ -11,7 +11,7 @@ class Direxion(Contract):
         self.primaryExchange = 'ARCA'
 
 
-class DirexionBulls:
+class DirexionSectorBulls:
 
     @staticmethod
     def tawk():
@@ -146,5 +146,88 @@ class DirexionBulls:
         return contract
 
 
-class DirexionBears:
-    pass
+class DirexionSectorBears:
+
+    @staticmethod
+    def mute():
+        contract = Direxion()
+        contract.symbol = 'MUTE'
+        return contract
+
+    @staticmethod
+    def passs():
+        contract = Direxion()
+        contract.symbol = 'PASS'
+        return contract
+
+    @staticmethod
+    def lack():
+        contract = Direxion()
+        contract.symbol = 'LACK'
+        return contract
+
+    @staticmethod
+    def ery():
+        contract = Direxion()
+        contract.symbol = 'ERY'
+        return contract
+
+    @staticmethod
+    def faz():
+        contract = Direxion()
+        contract.symbol = 'FAZ'
+        return contract
+
+    @staticmethod
+    def dust():
+        contract = Direxion()
+        contract.symbol = 'DUST'
+        return contract
+
+    @staticmethod
+    def jdst():
+        contract = Direxion()
+        contract.symbol = 'JDST'
+        return contract
+
+    @staticmethod
+    def drv():
+        contract = Direxion()
+        contract.symbol = 'DRV'
+        return contract
+
+    @staticmethod
+    def gasx():
+        contract = Direxion()
+        contract.symbol = 'GASX'
+        return contract
+
+    @staticmethod
+    def wdrw():
+        contract = Direxion()
+        contract.symbol = 'WDRW'
+        return contract
+
+    @staticmethod
+    def labd():
+        contract = Direxion()
+        contract.symbol = 'LABD'
+        return contract
+
+    @staticmethod
+    def drip():
+        contract = Direxion()
+        contract.symbol = 'DRIP'
+        return contract
+
+    @staticmethod
+    def soxs():
+        contract = Direxion()
+        contract.symbol = 'SOXS'
+        return contract
+
+    @staticmethod
+    def tecs():
+        contract = Direxion()
+        contract.symbol = 'TECS'
+        return contract

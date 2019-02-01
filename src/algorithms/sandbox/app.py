@@ -4,7 +4,7 @@ from ibapi import wrapper
 from ibapi.client import EClient
 from ibapi.contract import Contract
 
-from common.watchlists.lev_sects import DirexionBulls as db
+from common.watchlists.lev_sects import DirexionSectorBulls
 
 
 TWS_PORT=int(os.getenv('TWS_PORT'))
@@ -36,7 +36,7 @@ def main():
 
     app.connect(host='127.0.0.1', port=TWS_PORT, clientId=0)
 
-    app.reqContractDetails(1, db.tawk())
+    app.reqContractDetails(1, DirexionSectorBulls.tawk())
 
     app.run()
 
