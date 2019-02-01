@@ -1,10 +1,11 @@
 import os
+import logging
 
 from ibapi import wrapper
 from ibapi.client import EClient
-from ibapi.contract import Contract
 
 from common.watchlists.lev_sects import DirexionSectorBulls
+from common.utils.logging import setupLogger
 
 
 TWS_PORT=int(os.getenv('TWS_PORT'))
@@ -32,8 +33,12 @@ class TestApp(TestWrapper, TestClient):
 
 
 def main():
-    app = TestApp()
+    setupLogger(logging_level=logging.DEBUG)
 
+    logging.info("executing job")
+    logging.getLogger().setLevel(logging.ERROR)
+
+    app = TestApp()
     app.connect(host='127.0.0.1', port=TWS_PORT, clientId=0)
 
     app.reqContractDetails(1, DirexionSectorBulls.tawk())
