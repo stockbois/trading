@@ -34,7 +34,6 @@ class TestApp(TestWrapper, TestClient):
 
 def main():
     setupLogger(logging_level=logging.DEBUG)
-
     logging.info("executing job")
     logging.getLogger().setLevel(logging.ERROR)
 
