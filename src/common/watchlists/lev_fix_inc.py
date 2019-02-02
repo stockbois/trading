@@ -39,3 +39,14 @@ class DirexionFixIncBears:
         contract = Direxion()
         contract.symbol = 'TYO'
         return contract
+
+
+def Test():
+    from ibapi.utils import ExerciseStaticMethods
+    ExerciseStaticMethods(Direxion)
+    ExerciseStaticMethods(DirexionFixIncBulls)
+    ExerciseStaticMethods(DirexionFixIncBears)
+
+
+if "__main__" == __name__:
+    Test()

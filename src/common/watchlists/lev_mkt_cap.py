@@ -51,3 +51,14 @@ class DirexionMktCapBears:
         contract = Direxion()
         contract.symbol = 'TZA'
         return contract
+
+
+def Test():
+    from ibapi.utils import ExerciseStaticMethods
+    ExerciseStaticMethods(Direxion)
+    ExerciseStaticMethods(DirexionMktCapBulls)
+    ExerciseStaticMethods(DirexionMktCapBears)
+
+
+if "__main__" == __name__:
+    Test()

@@ -111,3 +111,14 @@ class DirexionIntlEqBears:
         contract = Direxion()
         contract.symbol = 'RUSS'
         return contract
+
+
+def Test():
+    from ibapi.utils import ExerciseStaticMethods
+    ExerciseStaticMethods(Direxion)
+    ExerciseStaticMethods(DirexionIntlEqBulls)
+    ExerciseStaticMethods(DirexionIntlEqBears)
+
+
+if "__main__" == __name__:
+    Test()

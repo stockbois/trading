@@ -108,3 +108,5 @@ venv.bak/
 trading.iml
 .idea
 .DS_Store
+.vscode
+Pipfile.lock

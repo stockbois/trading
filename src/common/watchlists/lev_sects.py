@@ -231,3 +231,14 @@ class DirexionSectorBears:
         contract = Direxion()
         contract.symbol = 'TECS'
         return contract
+
+
+def Test():
+    from ibapi.utils import ExerciseStaticMethods
+    ExerciseStaticMethods(Direxion)
+    ExerciseStaticMethods(DirexionSectorBulls)
+    ExerciseStaticMethods(DirexionSectorBears)
+
+
+if "__main__" == __name__:
+    Test()
