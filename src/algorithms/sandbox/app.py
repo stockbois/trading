@@ -1,37 +1,21 @@
 import os
 import logging
+import datetime
+import json
+
+from google.cloud import firestore
 
 from ibapi import wrapper
 from ibapi.client import EClient
 from ibapi.contract import Contract
-from ibapi.utils import iswrapper
+
+from common.utils.logging import setupLogger
 
 from common.watchlists.lev_sects import DirexionSectorBulls
-from common.utils.logging import setupLogger
 
 from ibapi.account_summary_tags import AccountSummaryTags
 
-# from ibapi.common import *  # @UnusedWildImport
-# from ibapi.order_condition import *  # @UnusedWildImport
-# from ibapi.contract import *  # @UnusedWildImport
-# from ibapi.order import *  # @UnusedWildImport
-# from ibapi.order_state import *  # @UnusedWildImport
-# from ibapi.execution import Execution
-# from ibapi.execution import ExecutionFilter
-# from ibapi.commission_report import CommissionReport
-# from ibapi.ticktype import *  # @UnusedWildImport
-# from ibapi.tag_value import TagValue
-
 TWS_PORT = int(os.getenv('TWS_PORT'))
-
-
-def printWhenExecuting(fn):
-    def fn2(self):
-        logging.info('executing {fn}', fn=fn.__name__)
-        fn(self)
-        logging.info('done executing {fn}', fn=fn.__name__)
-
-    return fn2
 
 
 class TestClient(EClient):
@@ -51,10 +35,25 @@ class TestApp(TestWrapper, TestClient):
         TestWrapper.__init__(self)
         TestClient.__init__(self, wrapper=self)
 
+        self.ts = datetime.datetime.now().__format__('%Y-%m-%d-%H-%M-%S')
+        self.db = firestore.Client()
+
         self.started = False
         self.next_valid_order_id = None
         self.global_cancel = False
         self.account = None
+
+        # data for audit app
+        self.portfolio_arr = {
+            "U2793185": {
+                "stk": {}
+            }
+        }
+        self.account_arr = {
+            "U2793185": {
+                "val": {}
+            }
+        }
 
     # #########################
     # overrides
@@ -80,17 +79,39 @@ class TestApp(TestWrapper, TestClient):
 
     def position(self, account, contract, position, avgCost):
         if contract.secType == 'STK':
-            print('Contract: ', contract.symbol)
-            print('Position: ', position)
-            print('Avg Cost: ', avgCost)
-            print('Cost Basis: ', position * avgCost)
-            print('-----')
+            position_obj = {
+                "SecurityId": contract.secId,
+                "ContractSymbol": contract.symbol,
+                "PositionQty": position,
+                "AvgCost": avgCost,
+                "CostBasis": position * avgCost,
+                "PrimaryExchange": contract.primaryExchange,
+                "CurrentTimestamp": self.ts
+            }
+            self.portfolio_arr[contract.symbol] = position_obj
+            self.db.collection(u'portfolio'). \
+                document('stk'). \
+                set(self.portfolio_arr)
 
-    def updatePortfolio(self, contract:Contract, position:float,
-                        marketPrice:float, marketValue:float,
-                        averageCost:float, unrealizedPNL:float,
-                        realizedPNL:float, accountName:str):
-        print(contract.symbol, position, unrealizedPNL)
+    def updatePortfolio(self, contract: Contract, position: float,
+                        marketPrice: float, marketValue: float,
+                        averageCost: float, unrealizedPNL: float,
+                        realizedPNL: float, accountName: str):
+        super().updatePortfolio(contract, position,
+                                marketPrice, marketValue,
+                                averageCost, unrealizedPNL,
+                                realizedPNL, accountName)
+
+    def updateAccountValue(self, key: str, val: str, currency: str,
+                           accountName: str):
+        account_val_obj = {
+            key: val,
+            "CurrentTimestamp": self.ts
+        }
+        self.account_arr[self.account]['val'][key] = account_val_obj
+        self.db.collection(u'account'). \
+            document(key). \
+            set(account_val_obj)
 
     # #########################
     # app utilities
@@ -110,15 +131,9 @@ class TestApp(TestWrapper, TestClient):
             self.reqGlobalCancel()
         else:
             logging.info('executing requests')
-            # self.reqContractDetails(1, DirexionSectorBulls.cure())
-            # self.reqPositions()
-            self.accountOperations_req()
-
-    def accountOperations_req(self):
-        self.reqAccountUpdates(True, self.account)
-
-    def accountOperations_cancel(self):
-        self.reqAccountUpdates(False, self.account)
+            self.reqPositions()
+            self.reqAccountUpdates(True, self.account)
+            self.reqNewsProviders()
 
     def stop(self):
         logging.info('stopping app')
@@ -129,14 +144,13 @@ class TestApp(TestWrapper, TestClient):
 
 def main():
     setupLogger(logging_level=logging.DEBUG)
-
     logging.info("executing job")
 
     app = TestApp()
     app.connect(host='127.0.0.1', port=TWS_PORT, clientId=0)
 
     app.run()
-    # app.stop()
+    app.stop()
 
 
 if __name__ == '__main__':

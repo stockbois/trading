@@ -110,3 +110,4 @@ trading.iml
 .DS_Store
 .vscode
 Pipfile.lock
+creds
