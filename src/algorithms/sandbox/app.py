@@ -1,7 +1,6 @@
 import os
 import logging
 import datetime
-import json
 
 from google.cloud import firestore
 
@@ -11,9 +10,8 @@ from ibapi.contract import Contract
 
 from common.utils.logging import setupLogger
 
-from common.watchlists.lev_sects import DirexionSectorBulls
+# from common.watchlists.lev_sects import DirexionSectorBulls
 
-from ibapi.account_summary_tags import AccountSummaryTags
 
 TWS_PORT = int(os.getenv('TWS_PORT'))
 
@@ -133,7 +131,6 @@ class TestApp(TestWrapper, TestClient):
             logging.info('executing requests')
             self.reqPositions()
             self.reqAccountUpdates(True, self.account)
-            self.reqNewsProviders()
 
     def stop(self):
         logging.info('stopping app')
@@ -143,7 +140,7 @@ class TestApp(TestWrapper, TestClient):
 
 
 def main():
-    setupLogger(logging_level=logging.DEBUG)
+    setupLogger(logging_level=logging.INFO)
     logging.info("executing job")
 
     app = TestApp()
