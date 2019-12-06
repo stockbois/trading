@@ -4,13 +4,14 @@ import datetime
 
 from google.cloud import firestore
 
-from ibapi import wrapper
+from ibapi import wrapper, commission_report
 from ibapi.client import EClient
 from ibapi.contract import Contract
+from ibapi.execution import ExecutionFilter
 
 from common.utils.logging import setupLogger
 
-# from common.watchlists.lev_sects import DirexionSectorBulls
+from common.watchlists.lev_sects import DirexionSectorBulls
 
 
 TWS_PORT = int(os.getenv('TWS_PORT'))
@@ -107,9 +108,9 @@ class TestApp(TestWrapper, TestClient):
             "CurrentTimestamp": self.ts
         }
         self.account_arr[self.account]['val'][key] = account_val_obj
-        self.db.collection(u'account'). \
-            document(key). \
-            set(account_val_obj)
+        # self.db.collection(u'account'). \
+        #     document(key). \
+        #     set(account_val_obj)
 
     # #########################
     # app utilities
