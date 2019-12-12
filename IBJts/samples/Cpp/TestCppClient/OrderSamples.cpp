@@ -1,9 +1,9 @@
-/* Copyright (C) 2018 Interactive Brokers LLC. All rights reserved. This code is subject to the terms
+﻿/* Copyright (C) 2019 Interactive Brokers LLC. All rights reserved. This code is subject to the terms
  * and conditions of the IB API Non-Commercial License or the IB API Commercial License, as applicable. */
 #include "StdAfx.h"
 
-#include "OrderSamples.h"
 #include "Order.h"
+#include "OrderSamples.h"
 #include "PriceCondition.h"
 #include "executioncondition.h"
 #include "MarginCondition.h"
@@ -135,6 +135,22 @@ Order OrderSamples::MidpointMatch(std::string action, double quantity){
 }
 
 	/// <summary>
+	// A Midprice order is designed to split the difference between the bid and ask prices, and fill at the current midpoint of 
+	// the NBBO or better. Set an optional price cap to define the highest price (for a buy order) or the lowest price (for a sell 
+	// order) you are willing to accept. Requires TWS 975+. Smart-routing to US stocks only.
+    /// </summary>
+Order OrderSamples::Midprice(std::string action, double quantity, double priceCap){
+	//! [midprice]
+	Order order;
+	order.action = action;
+	order.orderType = "MIDPRICE";
+	order.totalQuantity = quantity;
+	order.lmtPrice = priceCap; // optional
+	//! [midprice]
+	return order;
+}
+
+	/// <summary>
     /// A pegged-to-market order is designed to maintain a purchase price relative to the national best offer (NBO) or a sale price 
     /// relative to the national best bid (NBB). Depending on the width of the quote, this order may be passive or aggressive. 
     /// The trader creates the order by entering a limit price which defines the worst limit price that they are willing to accept. 
@@ -171,7 +187,7 @@ Order OrderSamples::PeggedToStock(std::string action, double quantity, double de
 	order.orderType = "PEG STK";
 	order.totalQuantity = quantity;
 	order.delta = delta;
-	order.lmtPrice = stockReferencePrice;
+	order.stockRefPrice = stockReferencePrice;
 	order.startingPrice = startingPrice;
 	//! [pegged_stock]
 	return order;

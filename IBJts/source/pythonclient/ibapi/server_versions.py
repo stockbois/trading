@@ -1,6 +1,6 @@
 """
-Copyright (C) 2018 Interactive Brokers LLC. All rights reserved. This code is subject to the terms
-and conditions of the IB API Non-Commercial License or the IB API Commercial License, as applicable.
+Copyright (C) 2019 Interactive Brokers LLC. All rights reserved. This code is subject to the terms
+ and conditions of the IB API Non-Commercial License or the IB API Commercial License, as applicable.
 """
 
 """
@@ -96,9 +96,12 @@ MIN_SERVER_VER_ORDER_CONTAINER          = 145
 MIN_SERVER_VER_SMART_DEPTH              = 146
 MIN_SERVER_VER_REMOVE_NULL_ALL_CASTING  = 147
 MIN_SERVER_VER_D_PEG_ORDERS             = 148
+MIN_SERVER_VER_MKT_DEPTH_PRIM_EXCHANGE  = 149
+MIN_SERVER_VER_COMPLETED_ORDERS         = 150
+MIN_SERVER_VER_PRICE_MGMT_ALGO          = 151
 
 # 100+ messaging */
 # 100 = enhanced handshake, msg length prefixes
 
 MIN_CLIENT_VER = 100
-MAX_CLIENT_VER = MIN_SERVER_VER_D_PEG_ORDERS
+MAX_CLIENT_VER = MIN_SERVER_VER_PRICE_MGMT_ALGO

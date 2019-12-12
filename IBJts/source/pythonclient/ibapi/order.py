@@ -1,6 +1,6 @@
 """
-Copyright (C) 2018 Interactive Brokers LLC. All rights reserved. This code is subject to the terms
-and conditions of the IB API Non-Commercial License or the IB API Commercial License, as applicable.
+Copyright (C) 2019 Interactive Brokers LLC. All rights reserved. This code is subject to the terms
+ and conditions of the IB API Non-Commercial License or the IB API Commercial License, as applicable.
 """
 
 
@@ -199,6 +199,17 @@ class Order(Object):
         self.isOmsContainer = False
 
         self.discretionaryUpToLimitPrice = False
+
+        self.autoCancelDate = ""
+        self.filledQuantity = UNSET_DOUBLE
+        self.refFuturesConId = 0
+        self.autoCancelParent = False
+        self.shareholder = ""
+        self.imbalanceOnly = False
+        self.routeMarketableToBbo = False
+        self.parentPermId = 0
+
+        self.usePriceMgmtAlgo = None
 
     def __str__(self):
         s = "%s,%d,%s:" % (self.orderId, self.clientId, self.permId)

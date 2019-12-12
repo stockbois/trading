@@ -43,11 +43,7 @@ class TestApp(TestWrapper, TestClient):
         self.account = None
 
         # data for audit app
-        self.portfolio_arr = {
-            "U2793185": {
-                "stk": {}
-            }
-        }
+        self.portfolio_arr = {}
         self.account_arr = {
             "U2793185": {
                 "val": {}
@@ -71,10 +67,10 @@ class TestApp(TestWrapper, TestClient):
         self.next_valid_order_id = orderId
         self.start()
 
-    def contractDetails(self, reqId, contractDetails):
-        print('Request ID: ', reqId)
-        print('Contract: ', contractDetails.contract.symbol)
-        print('Long Name: ', contractDetails.longName)
+    # def contractDetails(self, reqId, contractDetails):
+    #     print('Request ID: ', reqId)
+    #     print('Contract: ', contractDetails.contract.symbol)
+    #     print('Long Name: ', contractDetails.longName)
 
     def position(self, account, contract, position, avgCost):
         if contract.secType == 'STK':
@@ -92,25 +88,53 @@ class TestApp(TestWrapper, TestClient):
                 document('stk'). \
                 set(self.portfolio_arr)
 
-    def updatePortfolio(self, contract: Contract, position: float,
-                        marketPrice: float, marketValue: float,
-                        averageCost: float, unrealizedPNL: float,
-                        realizedPNL: float, accountName: str):
-        super().updatePortfolio(contract, position,
-                                marketPrice, marketValue,
-                                averageCost, unrealizedPNL,
-                                realizedPNL, accountName)
+    def updatePortfolio(
+            self,
+            contract: Contract,
+            position: float,
+            marketPrice: float,
+            marketValue: float,
+            averageCost: float,
+            unrealizedPNL: float,
+            realizedPNL: float,
+            accountName: str
+    ):
+        # super().updatePortfolio(
+        #     contract,
+        #     position,
+        #     marketPrice,
+        #     marketValue,
+        #     averageCost,
+        #     unrealizedPNL,
+        #     realizedPNL,
+        #     accountName)
+        print({
+            "contract": contract,
+            "position": position,
+            "marketPrice": marketPrice,
+            "marketValue": marketValue,
+            "averageCost": averageCost,
+            "unrealizedPNL": unrealizedPNL,
+            "realizedPNL": realizedPNL,
+            "accountName": accountName,
+            "ts": self.ts
+        })
 
-    def updateAccountValue(self, key: str, val: str, currency: str,
-                           accountName: str):
+    def updateAccountValue(
+            self,
+            key: str,
+            val: str,
+            currency: str,
+            accountName: str
+    ):
         account_val_obj = {
             key: val,
             "CurrentTimestamp": self.ts
         }
         self.account_arr[self.account]['val'][key] = account_val_obj
-        # self.db.collection(u'account'). \
-        #     document(key). \
-        #     set(account_val_obj)
+        self.db.collection(u'account'). \
+            document(key). \
+            set(account_val_obj)
 
     # #########################
     # app utilities

@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2018 Interactive Brokers LLC. All rights reserved. This code is subject to the terms
+/* Copyright (C) 2019 Interactive Brokers LLC. All rights reserved. This code is subject to the terms
  * and conditions of the IB API Non-Commercial License or the IB API Commercial License, as applicable. */
 
 #pragma once
@@ -8,12 +8,12 @@
 #include "TagValue.h"
 #include "OrderCondition.h"
 #include "SoftDollarTier.h"
-
 #include <float.h>
 #include <limits.h>
 
 #define UNSET_DOUBLE DBL_MAX
 #define UNSET_INTEGER INT_MAX
+#define UNSET_LONG LLONG_MAX
 
 enum Origin { CUSTOMER,
               FIRM,
@@ -23,6 +23,10 @@ enum AuctionStrategy { AUCTION_UNSET = 0,
                        AUCTION_MATCH = 1,
                        AUCTION_IMPROVEMENT = 2,
                        AUCTION_TRANSPARENT = 3 };
+
+enum UsePriceMmgtAlgo { DONT_USE = 0,
+                        USE,
+                        DEFAULT = UNSET_INTEGER };
 
 struct OrderComboLeg
 {
@@ -161,6 +165,17 @@ struct Order
 
         isOmsContainer = false;
         discretionaryUpToLimitPrice = false;
+
+		autoCancelDate = "";
+		filledQuantity = UNSET_DOUBLE;
+		refFuturesConId = UNSET_INTEGER;
+		autoCancelParent = false;
+		shareholder = "";
+		imbalanceOnly = false;
+		routeMarketableToBbo = false;
+		parentPermId = UNSET_LONG;
+		
+        usePriceMgmtAlgo = UsePriceMmgtAlgo::DEFAULT;
 	}
 
 	// order identifier
@@ -339,6 +354,17 @@ struct Order
     bool isOmsContainer;
 
     bool discretionaryUpToLimitPrice;
+
+    std::string autoCancelDate;
+    double filledQuantity;
+    int refFuturesConId;
+    bool autoCancelParent;
+    std::string shareholder;
+    bool imbalanceOnly;
+    bool routeMarketableToBbo;
+    long long parentPermId;
+
+    UsePriceMmgtAlgo usePriceMgmtAlgo;
 
 public:
 

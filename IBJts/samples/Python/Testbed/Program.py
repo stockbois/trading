@@ -1,6 +1,6 @@
 """
-Copyright (C) 2018 Interactive Brokers LLC. All rights reserved. This code is subject to the terms
-and conditions of the IB API Non-Commercial License or the IB API Commercial License, as applicable.
+Copyright (C) 2019 Interactive Brokers LLC. All rights reserved. This code is subject to the terms
+ and conditions of the IB API Non-Commercial License or the IB API Commercial License, as applicable.
 """
 
 import argparse
@@ -13,19 +13,20 @@ import time
 import os.path
 
 from ibapi import wrapper
+from ibapi import utils
 from ibapi.client import EClient
 from ibapi.utils import iswrapper
 
 # types
-from ibapi.common import *  # @UnusedWildImport
-from ibapi.order_condition import *  # @UnusedWildImport
-from ibapi.contract import *  # @UnusedWildImport
-from ibapi.order import *  # @UnusedWildImport
-from ibapi.order_state import *  # @UnusedWildImport
+from ibapi.common import * # @UnusedWildImport
+from ibapi.order_condition import * # @UnusedWildImport
+from ibapi.contract import * # @UnusedWildImport
+from ibapi.order import * # @UnusedWildImport
+from ibapi.order_state import * # @UnusedWildImport
 from ibapi.execution import Execution
 from ibapi.execution import ExecutionFilter
 from ibapi.commission_report import CommissionReport
-from ibapi.ticktype import *  # @UnusedWildImport
+from ibapi.ticktype import * # @UnusedWildImport
 from ibapi.tag_value import TagValue
 
 from ibapi.account_summary_tags import *
@@ -68,11 +69,9 @@ def printWhenExecuting(fn):
 
     return fn2
 
-
-def printinstance(inst: Object):
+def printinstance(inst:Object):
     attrs = vars(inst)
     print(', '.join("%s: %s" % item for item in attrs.items()))
-
 
 class Activity(Object):
     def __init__(self, reqMsgId, ansMsgId, ansEndMsgId, reqId):
@@ -128,7 +127,7 @@ class TestClient(EClient):
                 # logging.debug("meth %s", name)
                 sig = inspect.signature(meth)
                 for (idx, pnameNparam) in enumerate(sig.parameters.items()):
-                    (paramName, param) = pnameNparam  # @UnusedVariable
+                    (paramName, param) = pnameNparam # @UnusedVariable
                     if paramName == "reqId":
                         self.clntMeth2reqIdIdx[methName] = idx
 
@@ -168,7 +167,7 @@ class TestWrapper(wrapper.EWrapper):
             # logging.debug("meth %s", name)
             sig = inspect.signature(meth)
             for (idx, pnameNparam) in enumerate(sig.parameters.items()):
-                (paramName, param) = pnameNparam  # @UnusedVariable
+                (paramName, param) = pnameNparam # @UnusedVariable
                 # we want to count the errors as 'error' not 'answer'
                 if 'error' not in methName and paramName == "reqId":
                     self.wrapMeth2reqIdIdx[methName] = idx
@@ -186,7 +185,6 @@ class TestWrapper(wrapper.EWrapper):
         self.reader.start()   # start thread
 #! [ereader]
 """
-
 
 # ! [socket_init]
 class TestApp(TestWrapper, TestClient):
@@ -235,7 +233,7 @@ class TestApp(TestWrapper, TestClient):
         logging.debug("setting nextValidOrderId: %d", orderId)
         self.nextValidOrderId = orderId
         print("NextValidId:", orderId)
-        # ! [nextvalidid]
+    # ! [nextvalidid]
 
         # we can start now
         self.start()
@@ -251,32 +249,32 @@ class TestApp(TestWrapper, TestClient):
             self.reqGlobalCancel()
         else:
             print("Executing requests")
-            # self.reqGlobalCancel()
-            # self.marketDataTypeOperations()
-            # self.accountOperations_req()
-            # self.tickDataOperations_req()
-            self.marketDepthOperations_req()
-            # self.realTimeBarsOperations_req()
-            # self.historicalDataOperations_req()
-            # self.optionsOperations_req()
-            # self.marketScannersOperations_req()
-            # self.fundamentalsOperations_req()
-            # self.bulletinsOperations_req()
-            # self.contractOperations()
-            # self.newsOperations_req()
-            # self.miscelaneousOperations()
-            # self.linkingOperations()
-            # self.financialAdvisorOperations()
-            # self.orderOperations_req()
-            # self.rerouteCFDOperations()
-            # self.marketRuleOperations()
-            # self.pnlOperations_req()
-            # self.histogramOperations_req()
-            # self.continuousFuturesOperations_req()
-            # self.historicalTicksOperations()
-            # self.tickByTickOperations_req()
-            # self.whatIfOrderOperations()
-
+            #self.reqGlobalCancel()
+            #self.marketDataTypeOperations()
+            #self.accountOperations_req()
+            #self.tickDataOperations_req()
+            #self.marketDepthOperations_req()
+            #self.realTimeBarsOperations_req()
+            #self.historicalDataOperations_req()
+            #self.optionsOperations_req()
+            #self.marketScannersOperations_req()
+            #self.fundamentalsOperations_req()
+            #self.bulletinsOperations_req()
+            #self.contractOperations()
+            #self.newsOperations_req()
+            #self.miscelaneousOperations()
+            #self.linkingOperations()
+            #self.financialAdvisorOperations()
+            self.orderOperations_req()
+            #self.rerouteCFDOperations()
+            #self.marketRuleOperations()
+            #self.pnlOperations_req()
+            #self.histogramOperations_req()
+            #self.continuousFuturesOperations_req()
+            #self.historicalTicksOperations()
+            #self.tickByTickOperations_req()
+            #self.whatIfOrderOperations()
+            
             print("Executing requests ... finished")
 
     def keyboardInterrupt(self):
@@ -289,21 +287,21 @@ class TestApp(TestWrapper, TestClient):
 
     def stop(self):
         print("Executing cancels")
-        # self.orderOperations_cancel()
-        # self.accountOperations_cancel()
-        # self.tickDataOperations_cancel()
+        #self.orderOperations_cancel()
+        #self.accountOperations_cancel()
+        #self.tickDataOperations_cancel()
         self.marketDepthOperations_cancel()
-        # self.realTimeBarsOperations_cancel()
-        # self.historicalDataOperations_cancel()
-        # self.optionsOperations_cancel()
-        # self.marketScanners_cancel()
-        # self.fundamentalsOperations_cancel()
-        # self.bulletinsOperations_cancel()
-        # self.newsOperations_cancel()
-        # self.pnlOperations_cancel()
-        # self.histogramOperations_cancel()
-        # self.continuousFuturesOperations_cancel()
-        # self.tickByTickOperations_cancel()
+        #self.realTimeBarsOperations_cancel()
+        #self.historicalDataOperations_cancel()
+        #self.optionsOperations_cancel()
+        #self.marketScanners_cancel()
+        #self.fundamentalsOperations_cancel()
+        #self.bulletinsOperations_cancel()
+        #self.newsOperations_cancel()
+        #self.pnlOperations_cancel()
+        #self.histogramOperations_cancel()
+        #self.continuousFuturesOperations_cancel()
+        #self.tickByTickOperations_cancel()
         print("Executing cancels ... finished")
 
     def nextOrderId(self):
@@ -319,6 +317,7 @@ class TestApp(TestWrapper, TestClient):
 
     # ! [error] self.reqId2nErr[reqId] += 1
 
+
     @iswrapper
     def winError(self, text: str, lastError: int):
         super().winError(text, lastError)
@@ -328,22 +327,14 @@ class TestApp(TestWrapper, TestClient):
     def openOrder(self, orderId: OrderId, contract: Contract, order: Order,
                   orderState: OrderState):
         super().openOrder(orderId, contract, order, orderState)
-        print("OpenOrder. ID:", orderId, "Symbol:", contract.symbol, "SecType:", contract.secType,
+        print("OpenOrder. PermId: ", order.permId, "ClientId:", order.clientId, " OrderId:", orderId, 
+              "Account:", order.account, "Symbol:", contract.symbol, "SecType:", contract.secType,
               "Exchange:", contract.exchange, "Action:", order.action, "OrderType:", order.orderType,
-              "TotalQuantity:", order.totalQuantity, "Status:", orderState.status)
-
-        if order.whatIf and orderState is not None:
-            print("WhatIf. OrderId: ", orderId, "initMarginBefore:", orderState.initMarginBefore, "maintMarginBefore:",
-                  orderState.maintMarginBefore,
-                  "equityWithLoanBefore:", orderState.equityWithLoanBefore, "initMarginChange:",
-                  orderState.initMarginChange, "maintMarginChange:", orderState.maintMarginChange,
-                  "equityWithLoanChange:", orderState.equityWithLoanChange, "initMarginAfter:",
-                  orderState.initMarginAfter, "maintMarginAfter:", orderState.maintMarginAfter,
-                  "equityWithLoanAfter:", orderState.equityWithLoanAfter)
+              "TotalQty:", order.totalQuantity, "CashQty:", order.cashQty, 
+              "LmtPrice:", order.lmtPrice, "AuxPrice:", order.auxPrice, "Status:", orderState.status)
 
         order.contract = contract
         self.permId2ord[order.permId] = order
-
     # ! [openorder]
 
     @iswrapper
@@ -353,7 +344,6 @@ class TestApp(TestWrapper, TestClient):
         print("OpenOrderEnd")
 
         logging.debug("Received %d openOrders", len(self.permId2ord))
-
     # ! [openorderend]
 
     @iswrapper
@@ -369,8 +359,8 @@ class TestApp(TestWrapper, TestClient):
               "PermId:", permId, "ParentId:", parentId, "LastFillPrice:",
               lastFillPrice, "ClientId:", clientId, "WhyHeld:",
               whyHeld, "MktCapPrice:", mktCapPrice)
-
     # ! [orderstatus]
+
 
     @printWhenExecuting
     def accountOperations_req(self):
@@ -503,7 +493,6 @@ class TestApp(TestWrapper, TestClient):
         super().accountSummary(reqId, account, tag, value, currency)
         print("AccountSummary. ReqId:", reqId, "Account:", account,
               "Tag: ", tag, "Value:", value, "Currency:", currency)
-
     # ! [accountsummary]
 
     @iswrapper
@@ -511,7 +500,6 @@ class TestApp(TestWrapper, TestClient):
     def accountSummaryEnd(self, reqId: int):
         super().accountSummaryEnd(reqId)
         print("AccountSummaryEnd. ReqId:", reqId)
-
     # ! [accountsummaryend]
 
     @iswrapper
@@ -521,7 +509,6 @@ class TestApp(TestWrapper, TestClient):
         super().updateAccountValue(key, val, currency, accountName)
         print("UpdateAccountValue. Key:", key, "Value:", val,
               "Currency:", currency, "AccountName:", accountName)
-
     # ! [updateaccountvalue]
 
     @iswrapper
@@ -537,7 +524,6 @@ class TestApp(TestWrapper, TestClient):
               "MarketValue:", marketValue, "AverageCost:", averageCost,
               "UnrealizedPNL:", unrealizedPNL, "RealizedPNL:", realizedPNL,
               "AccountName:", accountName)
-
     # ! [updateportfolio]
 
     @iswrapper
@@ -545,7 +531,6 @@ class TestApp(TestWrapper, TestClient):
     def updateAccountTime(self, timeStamp: str):
         super().updateAccountTime(timeStamp)
         print("UpdateAccountTime. Time:", timeStamp)
-
     # ! [updateaccounttime]
 
     @iswrapper
@@ -553,7 +538,6 @@ class TestApp(TestWrapper, TestClient):
     def accountDownloadEnd(self, accountName: str):
         super().accountDownloadEnd(accountName)
         print("AccountDownloadEnd. Account:", accountName)
-
     # ! [accountdownloadend]
 
     @iswrapper
@@ -564,7 +548,6 @@ class TestApp(TestWrapper, TestClient):
         print("Position.", "Account:", account, "Symbol:", contract.symbol, "SecType:",
               contract.secType, "Currency:", contract.currency,
               "Position:", position, "Avg cost:", avgCost)
-
     # ! [position]
 
     @iswrapper
@@ -572,7 +555,6 @@ class TestApp(TestWrapper, TestClient):
     def positionEnd(self):
         super().positionEnd()
         print("PositionEnd")
-
     # ! [positionend]
 
     @iswrapper
@@ -584,7 +566,6 @@ class TestApp(TestWrapper, TestClient):
               "ModelCode:", modelCode, "Symbol:", contract.symbol, "SecType:",
               contract.secType, "Currency:", contract.currency, ",Position:",
               pos, "AvgCost:", avgCost)
-
     # ! [positionmulti]
 
     @iswrapper
@@ -592,7 +573,6 @@ class TestApp(TestWrapper, TestClient):
     def positionMultiEnd(self, reqId: int):
         super().positionMultiEnd(reqId)
         print("PositionMultiEnd. RequestId:", reqId)
-
     # ! [positionmultiend]
 
     @iswrapper
@@ -604,7 +584,6 @@ class TestApp(TestWrapper, TestClient):
         print("AccountUpdateMulti. RequestId:", reqId, "Account:", account,
               "ModelCode:", modelCode, "Key:", key, "Value:", value,
               "Currency:", currency)
-
     # ! [accountupdatemulti]
 
     @iswrapper
@@ -612,7 +591,6 @@ class TestApp(TestWrapper, TestClient):
     def accountUpdateMultiEnd(self, reqId: int):
         super().accountUpdateMultiEnd(reqId)
         print("AccountUpdateMultiEnd. RequestId:", reqId)
-
     # ! [accountupdatemultiend]
 
     @iswrapper
@@ -622,7 +600,6 @@ class TestApp(TestWrapper, TestClient):
         print("Family Codes:")
         for familyCode in familyCodes:
             print("FamilyCode.", familyCode)
-
     # ! [familyCodes]
 
     @iswrapper
@@ -632,7 +609,6 @@ class TestApp(TestWrapper, TestClient):
         super().pnl(reqId, dailyPnL, unrealizedPnL, realizedPnL)
         print("Daily PnL. ReqId:", reqId, "DailyPnL:", dailyPnL,
               "UnrealizedPnL:", unrealizedPnL, "RealizedPnL:", realizedPnL)
-
     # ! [pnl]
 
     @iswrapper
@@ -643,7 +619,6 @@ class TestApp(TestWrapper, TestClient):
         print("Daily PnL Single. ReqId:", reqId, "Position:", pos,
               "DailyPnL:", dailyPnL, "UnrealizedPnL:", unrealizedPnL,
               "RealizedPnL:", realizedPnL, "Value:", value)
-
     # ! [pnlsingle]
 
     def marketDataTypeOperations(self):
@@ -657,13 +632,12 @@ class TestApp(TestWrapper, TestClient):
     def marketDataType(self, reqId: TickerId, marketDataType: int):
         super().marketDataType(reqId, marketDataType)
         print("MarketDataType. ReqId:", reqId, "Type:", marketDataType)
-
     # ! [marketdatatype]
 
     @printWhenExecuting
     def tickDataOperations_req(self):
         self.reqMarketDataType(MarketDataTypeEnum.DELAYED_FROZEN)
-
+        
         # Requesting real time market data
 
         # ! [reqmktdata]
@@ -693,6 +667,7 @@ class TestApp(TestWrapper, TestClient):
         self.reqMktData(1008, ContractSamples.USStockAtSmart(), "mdoff,292:DJ-RT", False, False, [])
         # ! [reqmktdata_contractnews]
 
+
         # ! [reqmktdata_broadtapenews]
         self.reqMktData(1009, ContractSamples.BRFGbroadtapeNewsFeed(), "mdoff,292", False, False, [])
         self.reqMktData(1010, ContractSamples.DJNLbroadtapeNewsFeed(), "mdoff,292", False, False, [])
@@ -704,7 +679,7 @@ class TestApp(TestWrapper, TestClient):
         # Requesting data for an option contract will return the greek values
         self.reqMktData(1013, ContractSamples.OptionWithLocalSymbol(), "", False, False, [])
         self.reqMktData(1014, ContractSamples.FuturesOnOptions(), "", False, False, []);
-
+        
         # ! [reqoptiondatagenticks]
 
         # ! [reqfuturesopeninterest]
@@ -718,11 +693,12 @@ class TestApp(TestWrapper, TestClient):
         # ! [reqavgoptvolume]
         self.reqMktData(1017, ContractSamples.USStockAtSmart(), "mdoff,105", False, False, [])
         # ! [reqavgoptvolume]
-
+        
         # ! [reqsmartcomponents]
         # Requests description of map of single letter exchange codes to full exchange names
         self.reqSmartComponents(1018, "a6")
         # ! [reqsmartcomponents]
+        
 
     @printWhenExecuting
     def tickDataOperations_cancel(self):
@@ -733,24 +709,24 @@ class TestApp(TestWrapper, TestClient):
         # ! [cancelmktdata]
 
         self.cancelMktData(1004)
-
+        
         self.cancelMktData(1005)
         self.cancelMktData(1006)
         self.cancelMktData(1007)
         self.cancelMktData(1008)
-
+        
         self.cancelMktData(1009)
         self.cancelMktData(1010)
         self.cancelMktData(1011)
         self.cancelMktData(1012)
-
+        
         self.cancelMktData(1013)
         self.cancelMktData(1014)
-
+        
         self.cancelMktData(1015)
-
+        
         self.cancelMktData(1016)
-
+        
         self.cancelMktData(1017)
 
     @iswrapper
@@ -765,7 +741,6 @@ class TestApp(TestWrapper, TestClient):
             print("PreOpen:", attrib.preOpen)
         else:
             print()
-
     # ! [tickprice]
 
     @iswrapper
@@ -773,7 +748,6 @@ class TestApp(TestWrapper, TestClient):
     def tickSize(self, reqId: TickerId, tickType: TickType, size: int):
         super().tickSize(reqId, tickType, size)
         print("TickSize. TickerId:", reqId, "TickType:", tickType, "Size:", size)
-
     # ! [ticksize]
 
     @iswrapper
@@ -781,7 +755,6 @@ class TestApp(TestWrapper, TestClient):
     def tickGeneric(self, reqId: TickerId, tickType: TickType, value: float):
         super().tickGeneric(reqId, tickType, value)
         print("TickGeneric. TickerId:", reqId, "TickType:", tickType, "Value:", value)
-
     # ! [tickgeneric]
 
     @iswrapper
@@ -789,7 +762,6 @@ class TestApp(TestWrapper, TestClient):
     def tickString(self, reqId: TickerId, tickType: TickType, value: str):
         super().tickString(reqId, tickType, value)
         print("TickString. TickerId:", reqId, "Type:", tickType, "Value:", value)
-
     # ! [tickstring]
 
     @iswrapper
@@ -797,7 +769,6 @@ class TestApp(TestWrapper, TestClient):
     def tickSnapshotEnd(self, reqId: int):
         super().tickSnapshotEnd(reqId)
         print("TickSnapshotEnd. TickerId:", reqId)
-
     # ! [ticksnapshotend]
 
     @iswrapper
@@ -805,7 +776,6 @@ class TestApp(TestWrapper, TestClient):
     def rerouteMktDataReq(self, reqId: int, conId: int, exchange: str):
         super().rerouteMktDataReq(reqId, conId, exchange)
         print("Re-route market data request. ReqId:", reqId, "ConId:", conId, "Exchange:", exchange)
-
     # ! [rerouteMktDataReq]
 
     @iswrapper
@@ -815,7 +785,6 @@ class TestApp(TestWrapper, TestClient):
         print("Market Rule ID: ", marketRuleId)
         for priceIncrement in priceIncrements:
             print("Price Increment.", priceIncrement)
-
     # ! [marketRule]
 
     @printWhenExecuting
@@ -851,13 +820,12 @@ class TestApp(TestWrapper, TestClient):
         self.cancelTickByTickData(19007)
         self.cancelTickByTickData(19008)
         # ! [canceltickbytickwithhist]
-
+        
     @iswrapper
     # ! [orderbound]
     def orderBound(self, orderId: int, apiClientId: int, apiOrderId: int):
         super().orderBound(orderId, apiClientId, apiOrderId)
         print("OrderBound.", "OrderId:", orderId, "ApiClientId:", apiClientId, "ApiOrderId:", apiOrderId)
-
     # ! [orderbound]
 
     @iswrapper
@@ -873,10 +841,8 @@ class TestApp(TestWrapper, TestClient):
             print("AllLast.", end='')
         print(" ReqId:", reqId,
               "Time:", datetime.datetime.fromtimestamp(time).strftime("%Y%m%d %H:%M:%S"),
-              "Price:", price, "Size:", size, "Exch:", exchange,
-              "Spec Cond:", specialConditions, "PastLimit:", tickAtrribLast.pastLimit, "Unreported:",
-              tickAtrribLast.unreported)
-
+              "Price:", price, "Size:", size, "Exch:" , exchange,
+              "Spec Cond:", specialConditions, "PastLimit:", tickAtrribLast.pastLimit, "Unreported:", tickAtrribLast.unreported)
     # ! [tickbytickalllast]
 
     @iswrapper
@@ -888,9 +854,7 @@ class TestApp(TestWrapper, TestClient):
         print("BidAsk. ReqId:", reqId,
               "Time:", datetime.datetime.fromtimestamp(time).strftime("%Y%m%d %H:%M:%S"),
               "BidPrice:", bidPrice, "AskPrice:", askPrice, "BidSize:", bidSize,
-              "AskSize:", askSize, "BidPastLow:", tickAttribBidAsk.bidPastLow, "AskPastHigh:",
-              tickAttribBidAsk.askPastHigh)
-
+              "AskSize:", askSize, "BidPastLow:", tickAttribBidAsk.bidPastLow, "AskPastHigh:", tickAttribBidAsk.askPastHigh)
     # ! [tickbytickbidask]
 
     # ! [tickbytickmidpoint]
@@ -900,7 +864,6 @@ class TestApp(TestWrapper, TestClient):
         print("Midpoint. ReqId:", reqId,
               "Time:", datetime.datetime.fromtimestamp(time).strftime("%Y%m%d %H:%M:%S"),
               "MidPoint:", midPoint)
-
     # ! [tickbytickmidpoint]
 
     @printWhenExecuting
@@ -934,7 +897,6 @@ class TestApp(TestWrapper, TestClient):
         super().updateMktDepth(reqId, position, operation, side, price, size)
         print("UpdateMarketDepth. ReqId:", reqId, "Position:", position, "Operation:",
               operation, "Side:", side, "Price:", price, "Size:", size)
-
     # ! [updatemktdepth]
 
     @iswrapper
@@ -953,7 +915,6 @@ class TestApp(TestWrapper, TestClient):
     def rerouteMktDepthReq(self, reqId: int, conId: int, exchange: str):
         super().rerouteMktDataReq(reqId, conId, exchange)
         print("Re-route market depth request. ReqId:", reqId, "ConId:", conId, "Exchange:", exchange)
-
     # ! [rerouteMktDepthReq]
 
     @printWhenExecuting
@@ -965,11 +926,10 @@ class TestApp(TestWrapper, TestClient):
 
     @iswrapper
     # ! [realtimebar]
-    def realtimeBar(self, reqId: TickerId, time: int, open_: float, high: float, low: float, close: float,
-                    volume: int, wap: float, count: int):
+    def realtimeBar(self, reqId: TickerId, time:int, open_: float, high: float, low: float, close: float,
+                        volume: int, wap: float, count: int):
         super().realtimeBar(reqId, time, open_, high, low, close, volume, wap, count)
         print("RealTimeBar. TickerId:", reqId, RealTimeBar(time, -1, open_, high, low, close, volume, wap, count))
-
     # ! [realtimebar]
 
     @printWhenExecuting
@@ -1001,7 +961,7 @@ class TestApp(TestWrapper, TestClient):
         # ! [cancelHeadTimestamp]
         self.cancelHeadTimeStamp(4101)
         # ! [cancelHeadTimestamp]
-
+        
         # Canceling historical data requests
         # ! [cancelhistoricaldata]
         self.cancelHistoricalData(4102)
@@ -1022,23 +982,20 @@ class TestApp(TestWrapper, TestClient):
 
     @iswrapper
     # ! [headTimestamp]
-    def headTimestamp(self, reqId: int, headTimestamp: str):
+    def headTimestamp(self, reqId:int, headTimestamp:str):
         print("HeadTimestamp. ReqId:", reqId, "HeadTimeStamp:", headTimestamp)
-
     # ! [headTimestamp]
 
     @iswrapper
     # ! [histogramData]
-    def histogramData(self, reqId: int, items: HistogramDataList):
+    def histogramData(self, reqId:int, items:HistogramDataList):
         print("HistogramData. ReqId:", reqId, "HistogramDataList:", "[%s]" % "; ".join(map(str, items)))
-
     # ! [histogramData]
 
     @iswrapper
     # ! [historicaldata]
-    def historicalData(self, reqId: int, bar: BarData):
+    def historicalData(self, reqId:int, bar: BarData):
         print("HistoricalData. ReqId:", reqId, "BarData.", bar)
-
     # ! [historicaldata]
 
     @iswrapper
@@ -1046,14 +1003,12 @@ class TestApp(TestWrapper, TestClient):
     def historicalDataEnd(self, reqId: int, start: str, end: str):
         super().historicalDataEnd(reqId, start, end)
         print("HistoricalDataEnd. ReqId:", reqId, "from", start, "to", end)
-
     # ! [historicaldataend]
 
     @iswrapper
     # ! [historicalDataUpdate]
     def historicalDataUpdate(self, reqId: int, bar: BarData):
         print("HistoricalDataUpdate. ReqId:", reqId, "BarData.", bar)
-
     # ! [historicalDataUpdate]
 
     @iswrapper
@@ -1061,7 +1016,6 @@ class TestApp(TestWrapper, TestClient):
     def historicalTicks(self, reqId: int, ticks: ListOfHistoricalTick, done: bool):
         for tick in ticks:
             print("HistoricalTick. ReqId:", reqId, tick)
-
     # ! [historicalticks]
 
     @iswrapper
@@ -1070,7 +1024,6 @@ class TestApp(TestWrapper, TestClient):
                               done: bool):
         for tick in ticks:
             print("HistoricalTickBidAsk. ReqId:", reqId, tick)
-
     # ! [historicalticksbidask]
 
     @iswrapper
@@ -1079,7 +1032,6 @@ class TestApp(TestWrapper, TestClient):
                             done: bool):
         for tick in ticks:
             print("HistoricalTickLast. ReqId:", reqId, tick)
-
     # ! [historicaltickslast]
 
     @printWhenExecuting
@@ -1119,10 +1071,8 @@ class TestApp(TestWrapper, TestClient):
         super().securityDefinitionOptionParameter(reqId, exchange,
                                                   underlyingConId, tradingClass, multiplier, expirations, strikes)
         print("SecurityDefinitionOptionParameter.",
-              "ReqId:", reqId, "Exchange:", exchange, "Underlying conId:", underlyingConId, "TradingClass:",
-              tradingClass, "Multiplier:", multiplier,
+              "ReqId:", reqId, "Exchange:", exchange, "Underlying conId:", underlyingConId, "TradingClass:", tradingClass, "Multiplier:", multiplier,
               "Expirations:", expirations, "Strikes:", str(strikes))
-
     # ! [securityDefinitionOptionParameter]
 
     @iswrapper
@@ -1130,7 +1080,6 @@ class TestApp(TestWrapper, TestClient):
     def securityDefinitionOptionParameterEnd(self, reqId: int):
         super().securityDefinitionOptionParameterEnd(reqId)
         print("SecurityDefinitionOptionParameterEnd. ReqId:", reqId)
-
     # ! [securityDefinitionOptionParameterEnd]
 
     @iswrapper
@@ -1146,6 +1095,7 @@ class TestApp(TestWrapper, TestClient):
               "Theta:", theta, "UnderlyingPrice:", undPrice)
 
     # ! [tickoptioncomputation]
+
 
     @printWhenExecuting
     def contractOperations(self):
@@ -1175,7 +1125,7 @@ class TestApp(TestWrapper, TestClient):
 
         # Returns body of news article given article ID
         # ! [reqNewsArticle]
-        self.reqNewsArticle(10002, "BRFG", "BRFG$04fb9da2", [])
+        self.reqNewsArticle(10002,"BRFG", "BRFG$04fb9da2", [])
         # ! [reqNewsArticle]
 
         # Returns list of historical news headlines with IDs
@@ -1195,55 +1145,49 @@ class TestApp(TestWrapper, TestClient):
         # ! [cancelNewsTicks]
 
     @iswrapper
-    # ! [tickNews]
+    #! [tickNews]
     def tickNews(self, tickerId: int, timeStamp: int, providerCode: str,
                  articleId: str, headline: str, extraData: str):
         print("TickNews. TickerId:", tickerId, "TimeStamp:", timeStamp,
               "ProviderCode:", providerCode, "ArticleId:", articleId,
               "Headline:", headline, "ExtraData:", extraData)
-
-    # ! [tickNews]
+    #! [tickNews]
 
     @iswrapper
-    # ! [historicalNews]
+    #! [historicalNews]
     def historicalNews(self, reqId: int, time: str, providerCode: str,
                        articleId: str, headline: str):
         print("HistoricalNews. ReqId:", reqId, "Time:", time,
               "ProviderCode:", providerCode, "ArticleId:", articleId,
               "Headline:", headline)
-
-    # ! [historicalNews]
+    #! [historicalNews]
 
     @iswrapper
-    # ! [historicalNewsEnd]
-    def historicalNewsEnd(self, reqId: int, hasMore: bool):
+    #! [historicalNewsEnd]
+    def historicalNewsEnd(self, reqId:int, hasMore:bool):
         print("HistoricalNewsEnd. ReqId:", reqId, "HasMore:", hasMore)
-
-    # ! [historicalNewsEnd]
+    #! [historicalNewsEnd]
 
     @iswrapper
-    # ! [newsProviders]
+    #! [newsProviders]
     def newsProviders(self, newsProviders: ListOfNewsProviders):
         print("NewsProviders: ")
         for provider in newsProviders:
             print("NewsProvider.", provider)
-
-    # ! [newsProviders]
+    #! [newsProviders]
 
     @iswrapper
-    # ! [newsArticle]
+    #! [newsArticle]
     def newsArticle(self, reqId: int, articleType: int, articleText: str):
         print("NewsArticle. ReqId:", reqId, "ArticleType:", articleType,
               "ArticleText:", articleText)
-
-    # ! [newsArticle]
+    #! [newsArticle]
 
     @iswrapper
     # ! [contractdetails]
     def contractDetails(self, reqId: int, contractDetails: ContractDetails):
         super().contractDetails(reqId, contractDetails)
         printinstance(contractDetails)
-
     # ! [contractdetails]
 
     @iswrapper
@@ -1251,7 +1195,6 @@ class TestApp(TestWrapper, TestClient):
     def bondContractDetails(self, reqId: int, contractDetails: ContractDetails):
         super().bondContractDetails(reqId, contractDetails)
         printinstance(contractDetails)
-
     # ! [bondcontractdetails]
 
     @iswrapper
@@ -1259,7 +1202,6 @@ class TestApp(TestWrapper, TestClient):
     def contractDetailsEnd(self, reqId: int):
         super().contractDetailsEnd(reqId)
         print("ContractDetailsEnd. ReqId:", reqId)
-
     # ! [contractdetailsend]
 
     @iswrapper
@@ -1276,12 +1218,11 @@ class TestApp(TestWrapper, TestClient):
                 derivSecTypes += " "
             print("Contract: conId:%s, symbol:%s, secType:%s primExchange:%s, "
                   "currency:%s, derivativeSecTypes:%s" % (
-                      contractDescription.contract.conId,
-                      contractDescription.contract.symbol,
-                      contractDescription.contract.secType,
-                      contractDescription.contract.primaryExchange,
-                      contractDescription.contract.currency, derivSecTypes))
-
+                contractDescription.contract.conId,
+                contractDescription.contract.symbol,
+                contractDescription.contract.secType,
+                contractDescription.contract.primaryExchange,
+                contractDescription.contract.currency, derivSecTypes))
     # ! [symbolSamples]
 
     @printWhenExecuting
@@ -1301,9 +1242,15 @@ class TestApp(TestWrapper, TestClient):
         tagvalues.append(TagValue("optVolumeAbove", "1000"))
         tagvalues.append(TagValue("avgVolumeAbove", "10000"));
 
-        self.reqScannerSubscription(7002, ScannerSubscriptionSamples.HotUSStkByVolume(), [],
-                                    tagvalues)  # requires TWS v973+
+        self.reqScannerSubscription(7002, ScannerSubscriptionSamples.HotUSStkByVolume(), [], tagvalues) # requires TWS v973+
         # ! [reqscannersubscription]
+
+        # ! [reqcomplexscanner]
+        AAPLConIDTag = [TagValue("underConID", "265598")]
+        self.reqScannerSubscription(7003, ScannerSubscriptionSamples.ComplexOrdersAndTrades(), [], AAPLConIDTag) # requires TWS v975+
+        
+        # ! [reqcomplexscanner]
+
 
     @printWhenExecuting
     def marketScanners_cancel(self):
@@ -1311,6 +1258,7 @@ class TestApp(TestWrapper, TestClient):
         # ! [cancelscannersubscription]
         self.cancelScannerSubscription(7001)
         self.cancelScannerSubscription(7002)
+        self.cancelScannerSubscription(7003)
         # ! [cancelscannersubscription]
 
     @iswrapper
@@ -1319,7 +1267,6 @@ class TestApp(TestWrapper, TestClient):
         super().scannerParameters(xml)
         open('log/scanner.xml', 'w').write(xml)
         print("ScannerParameters received.")
-
     # ! [scannerparameters]
 
     @iswrapper
@@ -1328,14 +1275,12 @@ class TestApp(TestWrapper, TestClient):
                     distance: str, benchmark: str, projection: str, legsStr: str):
         super().scannerData(reqId, rank, contractDetails, distance, benchmark,
                             projection, legsStr)
-        #        print("ScannerData. ReqId:", reqId, "Rank:", rank, "Symbol:", contractDetails.contract.symbol,
-        #              "SecType:", contractDetails.contract.secType,
-        #              "Currency:", contractDetails.contract.currency,
-        #              "Distance:", distance, "Benchmark:", benchmark,
-        #              "Projection:", projection, "Legs String:", legsStr)
-        print("ScannerData. ReqId:", reqId,
-              ScanData(contractDetails.contract, rank, distance, benchmark, projection, legsStr))
-
+#        print("ScannerData. ReqId:", reqId, "Rank:", rank, "Symbol:", contractDetails.contract.symbol,
+#              "SecType:", contractDetails.contract.secType,
+#              "Currency:", contractDetails.contract.currency,
+#              "Distance:", distance, "Benchmark:", benchmark,
+#              "Projection:", projection, "Legs String:", legsStr)
+        print("ScannerData. ReqId:", reqId, ScanData(contractDetails.contract, rank, distance, benchmark, projection, legsStr))
     # ! [scannerdata]
 
     @iswrapper
@@ -1347,32 +1292,29 @@ class TestApp(TestWrapper, TestClient):
 
     @iswrapper
     # ! [smartcomponents]
-    def smartComponents(self, reqId: int, smartComponentMap: SmartComponentMap):
+    def smartComponents(self, reqId:int, smartComponentMap:SmartComponentMap):
         super().smartComponents(reqId, smartComponentMap)
         print("SmartComponents:")
         for smartComponent in smartComponentMap:
             print("SmartComponent.", smartComponent)
-
     # ! [smartcomponents]
 
     @iswrapper
     # ! [tickReqParams]
-    def tickReqParams(self, tickerId: int, minTick: float,
-                      bboExchange: str, snapshotPermissions: int):
+    def tickReqParams(self, tickerId:int, minTick:float,
+                      bboExchange:str, snapshotPermissions:int):
         super().tickReqParams(tickerId, minTick, bboExchange, snapshotPermissions)
         print("TickReqParams. TickerId:", tickerId, "MinTick:", minTick,
               "BboExchange:", bboExchange, "SnapshotPermissions:", snapshotPermissions)
-
     # ! [tickReqParams]
 
     @iswrapper
     # ! [mktDepthExchanges]
-    def mktDepthExchanges(self, depthMktDataDescriptions: ListOfDepthExchanges):
+    def mktDepthExchanges(self, depthMktDataDescriptions:ListOfDepthExchanges):
         super().mktDepthExchanges(depthMktDataDescriptions)
         print("MktDepthExchanges:")
         for desc in depthMktDataDescriptions:
             print("DepthMktDataDescription.", desc)
-
     # ! [mktDepthExchanges]
 
     @printWhenExecuting
@@ -1381,14 +1323,13 @@ class TestApp(TestWrapper, TestClient):
         # ! [reqfundamentaldata]
         self.reqFundamentalData(8001, ContractSamples.USStock(), "ReportsFinSummary", [])
         # ! [reqfundamentaldata]
-
+        
         # ! [fundamentalexamples]
-        self.reqFundamentalData(8002, ContractSamples.USStock(), "ReportSnapshot", []);  # for company overview
-        self.reqFundamentalData(8003, ContractSamples.USStock(), "ReportRatios", []);  # for financial ratios
-        self.reqFundamentalData(8004, ContractSamples.USStock(), "ReportsFinStatements",
-                                []);  # for financial statements
-        self.reqFundamentalData(8005, ContractSamples.USStock(), "RESC", []);  # for analyst estimates
-        self.reqFundamentalData(8006, ContractSamples.USStock(), "CalendarReport", []);  # for company calendar
+        self.reqFundamentalData(8002, ContractSamples.USStock(), "ReportSnapshot", []); # for company overview
+        self.reqFundamentalData(8003, ContractSamples.USStock(), "ReportRatios", []); # for financial ratios
+        self.reqFundamentalData(8004, ContractSamples.USStock(), "ReportsFinStatements", []); # for financial statements
+        self.reqFundamentalData(8005, ContractSamples.USStock(), "RESC", []); # for analyst estimates
+        self.reqFundamentalData(8006, ContractSamples.USStock(), "CalendarReport", []); # for company calendar
         # ! [fundamentalexamples]
 
     @printWhenExecuting
@@ -1411,7 +1352,6 @@ class TestApp(TestWrapper, TestClient):
     def fundamentalData(self, reqId: TickerId, data: str):
         super().fundamentalData(reqId, data)
         print("FundamentalData. ReqId:", reqId, "Data:", data)
-
     # ! [fundamentaldata]
 
     @printWhenExecuting
@@ -1499,7 +1439,7 @@ class TestApp(TestWrapper, TestClient):
 
     def algoSamples(self):
         # ! [scale_order]
-        scaleOrder = OrderSamples.RelativePeggedToPrimary("BUY", 70000, 189, 0.01);
+        scaleOrder = OrderSamples.RelativePeggedToPrimary("BUY",  70000,  189,  0.01);
         AvailableAlgoParams.FillScaleParams(scaleOrder, 2000, 500, True, .02, 189.00, 3600, 2.00, True, 10, 40);
         self.placeOrder(self.nextOrderId(), ContractSamples.USStockAtSmart(), scaleOrder);
         # ! [scale_order]
@@ -1511,8 +1451,7 @@ class TestApp(TestWrapper, TestClient):
         # ! [algo_base_order]
 
         # ! [arrivalpx]
-        AvailableAlgoParams.FillArrivalPriceParams(baseOrder, 0.1, "Aggressive", "09:00:00 CET", "16:00:00 CET", True,
-                                                   True, 100000)
+        AvailableAlgoParams.FillArrivalPriceParams(baseOrder, 0.1, "Aggressive", "09:00:00 CET", "16:00:00 CET", True, True, 100000)
         self.placeOrder(self.nextOrderId(), ContractSamples.USStockAtSmart(), baseOrder)
         # ! [arrivalpx]
 
@@ -1521,10 +1460,13 @@ class TestApp(TestWrapper, TestClient):
         self.placeOrder(self.nextOrderId(), ContractSamples.USStockAtSmart(), baseOrder)
         # ! [darkice]
 
+        # ! [place_midprice]
+        self.placeOrder(self.nextOrderId(), ContractSamples.USStockAtSmart(), OrderSamples.Midprice("BUY", 1, 150))
+        # ! [place_midprice]
+		
         # ! [ad]
         # The Time Zone in "startTime" and "endTime" attributes is ignored and always defaulted to GMT
-        AvailableAlgoParams.FillAccumulateDistributeParams(baseOrder, 10, 60, True, True, 1, True, True,
-                                                           "20161010-12:00:00 GMT", "20161010-16:00:00 GMT")
+        AvailableAlgoParams.FillAccumulateDistributeParams(baseOrder, 10, 60, True, True, 1, True, True, "20161010-12:00:00 GMT", "20161010-16:00:00 GMT")
         self.placeOrder(self.nextOrderId(), ContractSamples.USStockAtSmart(), baseOrder)
         # ! [ad]
 
@@ -1564,34 +1506,34 @@ class TestApp(TestWrapper, TestClient):
         # ! [pctvol]
 
         # ! [pctvolpx]
-        AvailableAlgoParams.FillPriceVariantPctVolParams(baseOrder, 0.1, 0.05, 0.01, 0.2, "12:00:00 EST",
-                                                         "14:00:00 EST", True, 100000)
+        AvailableAlgoParams.FillPriceVariantPctVolParams(baseOrder, 0.1, 0.05, 0.01, 0.2, "12:00:00 EST", "14:00:00 EST", True, 100000)
         self.placeOrder(self.nextOrderId(), ContractSamples.USStockAtSmart(), baseOrder)
         # ! [pctvolpx]
 
         # ! [pctvolsz]
-        AvailableAlgoParams.FillSizeVariantPctVolParams(baseOrder, 0.2, 0.4, "12:00:00 EST", "14:00:00 EST", True,
-                                                        100000)
+        AvailableAlgoParams.FillSizeVariantPctVolParams(baseOrder, 0.2, 0.4, "12:00:00 EST", "14:00:00 EST", True, 100000)
         self.placeOrder(self.nextOrderId(), ContractSamples.USStockAtSmart(), baseOrder)
         # ! [pctvolsz]
 
         # ! [pctvoltm]
-        AvailableAlgoParams.FillTimeVariantPctVolParams(baseOrder, 0.2, 0.4, "12:00:00 EST", "14:00:00 EST", True,
-                                                        100000)
+        AvailableAlgoParams.FillTimeVariantPctVolParams(baseOrder, 0.2, 0.4, "12:00:00 EST", "14:00:00 EST", True, 100000)
         self.placeOrder(self.nextOrderId(), ContractSamples.USStockAtSmart(), baseOrder)
         # ! [pctvoltm]
 
         # ! [jeff_vwap_algo]
-        AvailableAlgoParams.FillJefferiesVWAPParams(baseOrder, "10:00:00 EST", "16:00:00 EST", 10, 10, "Exclude_Both",
-                                                    130, 135, 1, 10, "Patience", False, "Midpoint")
+        AvailableAlgoParams.FillJefferiesVWAPParams(baseOrder, "10:00:00 EST", "16:00:00 EST", 10, 10, "Exclude_Both", 130, 135, 1, 10, "Patience", False, "Midpoint")
         self.placeOrder(self.nextOrderId(), ContractSamples.JefferiesContract(), baseOrder)
         # ! [jeff_vwap_algo]
 
         # ! [csfb_inline_algo]
-        AvailableAlgoParams.FillCSFBInlineParams(baseOrder, "10:00:00 EST", "16:00:00 EST", "Patient", 10, 20, 100,
-                                                 "Default", False, 40, 100, 100, 35)
+        AvailableAlgoParams.FillCSFBInlineParams(baseOrder, "10:00:00 EST", "16:00:00 EST", "Patient", 10, 20, 100, "Default", False, 40, 100, 100, 35)
         self.placeOrder(self.nextOrderId(), ContractSamples.CSFBContract(), baseOrder)
         # ! [csfb_inline_algo]
+
+        # ! [qbalgo_strobe_algo]
+        AvailableAlgoParams.FillQBAlgoInLineParams(baseOrder, "10:00:00 EST", "16:00:00 EST", -99, "TWAP", 0.25, True)
+        self.placeOrder(self.nextOrderId(), ContractSamples.QBAlgoContract(), baseOrder)
+        # ! [qbalgo_strobe_algo]
 
     @printWhenExecuting
     def financialAdvisorOperations(self):
@@ -1635,7 +1577,6 @@ class TestApp(TestWrapper, TestClient):
         super().receiveFA(faData, cxml)
         print("Receiving FA: ", faData)
         open('log/fa.xml', 'w').write(cxml)
-
     # ! [receivefa]
 
     @iswrapper
@@ -1645,7 +1586,6 @@ class TestApp(TestWrapper, TestClient):
         print("SoftDollarTiers. ReqId:", reqId)
         for tier in tiers:
             print("SoftDollarTier.", tier)
-
     # ! [softDollarTiers]
 
     @printWhenExecuting
@@ -1678,7 +1618,6 @@ class TestApp(TestWrapper, TestClient):
     def displayGroupList(self, reqId: int, groups: str):
         super().displayGroupList(reqId, groups)
         print("DisplayGroupList. ReqId:", reqId, "Groups", groups)
-
     # ! [displaygrouplist]
 
     @iswrapper
@@ -1686,16 +1625,15 @@ class TestApp(TestWrapper, TestClient):
     def displayGroupUpdated(self, reqId: int, contractInfo: str):
         super().displayGroupUpdated(reqId, contractInfo)
         print("DisplayGroupUpdated. ReqId:", reqId, "ContractInfo:", contractInfo)
-
     # ! [displaygroupupdated]
 
     @printWhenExecuting
     def whatIfOrderOperations(self):
-        # ! [whatiflimitorder]
+    # ! [whatiflimitorder]
         whatIfOrder = OrderSamples.LimitOrder("SELL", 5, 70)
         whatIfOrder.whatIf = True
         self.placeOrder(self.nextOrderId(), ContractSamples.USStockAtSmart(), whatIfOrder)
-        # ! [whatiflimitorder]
+    # ! [whatiflimitorder]
         time.sleep(2)
 
     @printWhenExecuting
@@ -1720,6 +1658,7 @@ class TestApp(TestWrapper, TestClient):
         # ! [reqopenorders]
         self.reqOpenOrders()
         # ! [reqopenorders]
+
 
         # Placing/modifying an order - remember to ALWAYS increment the
         # nextValidId after placing an order so it can be used for the next one!
@@ -1765,58 +1704,58 @@ class TestApp(TestWrapper, TestClient):
         # ! [modelorder]
         modelOrder = OrderSamples.LimitOrder("BUY", 200, 100)
         modelOrder.account = "DF12345"
-        modelOrder.modelCode = "Technology"  # model for tech stocks first created in TWS
+        modelOrder.modelCode = "Technology" # model for tech stocks first created in TWS
         self.placeOrder(self.nextOrderId(), ContractSamples.USStock(), modelOrder)
         # ! [modelorder]
 
         self.placeOrder(self.nextOrderId(), ContractSamples.OptionAtBOX(),
                         OrderSamples.Block("BUY", 50, 20))
         self.placeOrder(self.nextOrderId(), ContractSamples.OptionAtBOX(),
-                        OrderSamples.BoxTop("SELL", 10))
+                         OrderSamples.BoxTop("SELL", 10))
         self.placeOrder(self.nextOrderId(), ContractSamples.FutureComboContract(),
-                        OrderSamples.ComboLimitOrder("SELL", 1, 1, False))
+                         OrderSamples.ComboLimitOrder("SELL", 1, 1, False))
         self.placeOrder(self.nextOrderId(), ContractSamples.StockComboContract(),
-                        OrderSamples.ComboMarketOrder("BUY", 1, True))
+                          OrderSamples.ComboMarketOrder("BUY", 1, True))
         self.placeOrder(self.nextOrderId(), ContractSamples.OptionComboContract(),
-                        OrderSamples.ComboMarketOrder("BUY", 1, False))
+                          OrderSamples.ComboMarketOrder("BUY", 1, False))
         self.placeOrder(self.nextOrderId(), ContractSamples.StockComboContract(),
-                        OrderSamples.LimitOrderForComboWithLegPrices("BUY", 1, [10, 5], True))
+                          OrderSamples.LimitOrderForComboWithLegPrices("BUY", 1, [10, 5], True))
         self.placeOrder(self.nextOrderId(), ContractSamples.USStock(),
-                        OrderSamples.Discretionary("SELL", 1, 45, 0.5))
+                         OrderSamples.Discretionary("SELL", 1, 45, 0.5))
         self.placeOrder(self.nextOrderId(), ContractSamples.OptionAtBOX(),
-                        OrderSamples.LimitIfTouched("BUY", 1, 30, 34))
+                          OrderSamples.LimitIfTouched("BUY", 1, 30, 34))
         self.placeOrder(self.nextOrderId(), ContractSamples.USStock(),
-                        OrderSamples.LimitOnClose("SELL", 1, 34))
+                          OrderSamples.LimitOnClose("SELL", 1, 34))
         self.placeOrder(self.nextOrderId(), ContractSamples.USStock(),
-                        OrderSamples.LimitOnOpen("BUY", 1, 35))
+                          OrderSamples.LimitOnOpen("BUY", 1, 35))
         self.placeOrder(self.nextOrderId(), ContractSamples.USStock(),
-                        OrderSamples.MarketIfTouched("BUY", 1, 30))
+                          OrderSamples.MarketIfTouched("BUY", 1, 30))
         self.placeOrder(self.nextOrderId(), ContractSamples.USStock(),
-                        OrderSamples.MarketOnClose("SELL", 1))
+                         OrderSamples.MarketOnClose("SELL", 1))
         self.placeOrder(self.nextOrderId(), ContractSamples.USStock(),
-                        OrderSamples.MarketOnOpen("BUY", 1))
+                          OrderSamples.MarketOnOpen("BUY", 1))
         self.placeOrder(self.nextOrderId(), ContractSamples.USStock(),
-                        OrderSamples.MarketOrder("SELL", 1))
+                          OrderSamples.MarketOrder("SELL", 1))
         self.placeOrder(self.nextOrderId(), ContractSamples.USStock(),
-                        OrderSamples.MarketToLimit("BUY", 1))
+                          OrderSamples.MarketToLimit("BUY", 1))
         self.placeOrder(self.nextOrderId(), ContractSamples.OptionAtIse(),
-                        OrderSamples.MidpointMatch("BUY", 1))
+                          OrderSamples.MidpointMatch("BUY", 1))
         self.placeOrder(self.nextOrderId(), ContractSamples.USStock(),
-                        OrderSamples.MarketToLimit("BUY", 1))
+                          OrderSamples.MarketToLimit("BUY", 1))
         self.placeOrder(self.nextOrderId(), ContractSamples.USStock(),
-                        OrderSamples.Stop("SELL", 1, 34.4))
+                          OrderSamples.Stop("SELL", 1, 34.4))
         self.placeOrder(self.nextOrderId(), ContractSamples.USStock(),
-                        OrderSamples.StopLimit("BUY", 1, 35, 33))
+                          OrderSamples.StopLimit("BUY", 1, 35, 33))
         self.placeOrder(self.nextOrderId(), ContractSamples.SimpleFuture(),
-                        OrderSamples.StopWithProtection("SELL", 1, 45))
+                          OrderSamples.StopWithProtection("SELL", 1, 45))
         self.placeOrder(self.nextOrderId(), ContractSamples.USStock(),
-                        OrderSamples.SweepToFill("BUY", 1, 35))
+                          OrderSamples.SweepToFill("BUY", 1, 35))
         self.placeOrder(self.nextOrderId(), ContractSamples.USStock(),
-                        OrderSamples.TrailingStop("SELL", 1, 0.5, 30))
+                          OrderSamples.TrailingStop("SELL", 1, 0.5, 30))
         self.placeOrder(self.nextOrderId(), ContractSamples.USStock(),
-                        OrderSamples.TrailingStopLimit("BUY", 1, 2, 5, 50))
+                          OrderSamples.TrailingStopLimit("BUY", 1, 2, 5, 50))
         self.placeOrder(self.nextOrderId(), ContractSamples.USOptionContract(),
-                        OrderSamples.Volatility("SELL", 1, 5, 2))
+                         OrderSamples.Volatility("SELL", 1, 5, 2))
 
         self.bracketSample()
 
@@ -1850,20 +1789,26 @@ class TestApp(TestWrapper, TestClient):
         # Attached TRAIL adjusted can only be attached to LMT parent orders.
         # self.placeOrder(self.nextOrderId(), ContractSamples.EuropeanStock(), OrderSamples.AttachAdjustableToTrailAmount(lmtParent, 34, 32, 33, 0.008))
         self.algoSamples()
-
+        
         self.ocaSample()
 
         # Request the day's executions
         # ! [reqexecutions]
         self.reqExecutions(10001, ExecutionFilter())
         # ! [reqexecutions]
+        
+        # Requesting completed orders
+        # ! [reqcompletedorders]
+        self.reqCompletedOrders(False)
+        # ! [reqcompletedorders]
+        
 
     def orderOperations_cancel(self):
         if self.simplePlaceOid is not None:
             # ! [cancelorder]
             self.cancelOrder(self.simplePlaceOid)
             # ! [cancelorder]
-
+            
         # Cancel all orders for all accounts
         # ! [reqglobalcancel]
         self.reqGlobalCancel()
@@ -1895,9 +1840,7 @@ class TestApp(TestWrapper, TestClient):
     # ! [execdetails]
     def execDetails(self, reqId: int, contract: Contract, execution: Execution):
         super().execDetails(reqId, contract, execution)
-        print("ExecDetails. ReqId:", reqId, "Symbol:", contract.symbol, "SecType:", contract.secType, "Currency:",
-              contract.currency, execution)
-
+        print("ExecDetails. ReqId:", reqId, "Symbol:", contract.symbol, "SecType:", contract.secType, "Currency:", contract.currency, execution)
     # ! [execdetails]
 
     @iswrapper
@@ -1905,7 +1848,6 @@ class TestApp(TestWrapper, TestClient):
     def execDetailsEnd(self, reqId: int):
         super().execDetailsEnd(reqId)
         print("ExecDetailsEnd. ReqId:", reqId)
-
     # ! [execdetailsend]
 
     @iswrapper
@@ -1913,16 +1855,34 @@ class TestApp(TestWrapper, TestClient):
     def commissionReport(self, commissionReport: CommissionReport):
         super().commissionReport(commissionReport)
         print("CommissionReport.", commissionReport)
-
     # ! [commissionreport]
 
     @iswrapper
     # ! [currenttime]
-    def currentTime(self, time: int):
+    def currentTime(self, time:int):
         super().currentTime(time)
         print("CurrentTime:", datetime.datetime.fromtimestamp(time).strftime("%Y%m%d %H:%M:%S"))
     # ! [currenttime]
 
+    @iswrapper
+    # ! [completedorder]
+    def completedOrder(self, contract: Contract, order: Order,
+                  orderState: OrderState):
+        super().completedOrder(contract, order, orderState)
+        print("CompletedOrder. PermId:", order.permId, "ParentPermId:", utils.longToStr(order.parentPermId), "Account:", order.account, 
+              "Symbol:", contract.symbol, "SecType:", contract.secType, "Exchange:", contract.exchange, 
+              "Action:", order.action, "OrderType:", order.orderType, "TotalQty:", order.totalQuantity, 
+              "CashQty:", order.cashQty, "FilledQty:", order.filledQuantity, 
+              "LmtPrice:", order.lmtPrice, "AuxPrice:", order.auxPrice, "Status:", orderState.status,
+              "Completed time:", orderState.completedTime, "Completed Status:" + orderState.completedStatus)
+    # ! [completedorder]
+
+    @iswrapper
+    # ! [completedordersend]
+    def completedOrdersEnd(self):
+        super().completedOrdersEnd()
+        print("CompletedOrdersEnd")
+    # ! [completedordersend]
 
 def main():
     SetupLogger()
@@ -1933,7 +1893,7 @@ def main():
     # cmdLineParser.add_option("-c", action="store_True", dest="use_cache", default = False, help = "use the cache")
     # cmdLineParser.add_option("-f", action="store", type="string", dest="file", default="", help="the input file")
     cmdLineParser.add_argument("-p", "--port", action="store", type=int,
-                               dest="port", default=7496, help="The TCP port to use")
+                               dest="port", default=7497, help="The TCP port to use")
     cmdLineParser.add_argument("-C", "--global-cancel", action="store_true",
                                dest="global_cancel", default=False,
                                help="whether to trigger a globalCancel req")
@@ -1941,6 +1901,7 @@ def main():
     print("Using args", args)
     logging.debug("Using args %s", args)
     # print(args)
+
 
     # enable logging when member vars are assigned
     from ibapi import utils
