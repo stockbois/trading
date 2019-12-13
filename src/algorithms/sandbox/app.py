@@ -10,6 +10,7 @@ from ibapi.contract import Contract
 from ibapi.execution import ExecutionFilter
 
 from common.utils.logging import setupLogger
+from common.utils.makers import make_contract
 
 from common.watchlists.lev_sects import DirexionSectorBulls
 
@@ -67,11 +68,6 @@ class TestApp(TestWrapper, TestClient):
         self.next_valid_order_id = orderId
         self.start()
 
-    # def contractDetails(self, reqId, contractDetails):
-    #     print('Request ID: ', reqId)
-    #     print('Contract: ', contractDetails.contract.symbol)
-    #     print('Long Name: ', contractDetails.longName)
-
     def position(self, account, contract, position, avgCost):
         if contract.secType == 'STK':
             position_obj = {
@@ -99,15 +95,6 @@ class TestApp(TestWrapper, TestClient):
             realizedPNL: float,
             accountName: str
     ):
-        # super().updatePortfolio(
-        #     contract,
-        #     position,
-        #     marketPrice,
-        #     marketValue,
-        #     averageCost,
-        #     unrealizedPNL,
-        #     realizedPNL,
-        #     accountName)
         print({
             "contract": contract,
             "position": position,
@@ -165,6 +152,7 @@ class TestApp(TestWrapper, TestClient):
 
 
 def main():
+    print(os.getenv('PYTHONPATH'))
     setupLogger(logging_level=logging.INFO)
     logging.info("executing job")
 
@@ -172,7 +160,6 @@ def main():
     app.connect(host='127.0.0.1', port=TWS_PORT, clientId=0)
 
     app.run()
-    app.stop()
 
 
 if __name__ == '__main__':
