@@ -1,6 +1,9 @@
 import os
 import logging
 import datetime
+import hashlib
+
+from google.cloud import firestore
 
 from ibapi.client import EClient
 from ibapi.wrapper import EWrapper
@@ -21,6 +24,8 @@ class TestApp(EWrapper, EClient):
         self.account = None
         self.positions = {}
         self.contracts = []
+        self.symbol_hash_map = {}
+        self.db = firestore.Client()
 
     def error(self, reqId, errorCode, errorString):
         if errorCode != 2104:
@@ -54,14 +59,13 @@ class TestApp(EWrapper, EClient):
         # self.start()
 
     def tickPrice(self, reqId, tickType, price, attrib):
-        print("Tick Price. Ticker Id:", reqId,
-              "tickType:", "Price:", price, attrib)
+        if price >= 0.0:
+            print("Tick Price.", self.symbol_hash_map[reqId], price)
 
-    def position(self, account: str, contract: Contract, position: float,
-                 avgCost: float):
+    def position(self, account, contract, position, avgCost):
         payload = {
             'contract': {
-                'con_id': contract.conId,
+                'contract_id': contract.conId,
                 'symbol': contract.symbol,
                 'security_type': contract.secType,
                 'last_trade_date': contract.lastTradeDateOrContractMonth,
@@ -80,10 +84,22 @@ class TestApp(EWrapper, EClient):
                 'ts': self.ts
             }
         }
-        self.positions[contract.symbol] = payload
-        if contract.conId not in self.contracts:
-            self.contracts.append(contract.conId)
-        print(payload, self.positions, self.contracts)
+        self.db.collection(u'portfolio'). \
+            document(contract.symbol). \
+            set(payload)
+
+        hash_id = int(
+            hashlib.sha256(contract.symbol.encode('utf-8')).hexdigest(), 16
+        ) % 10**8
+
+        print(contract.symbol, hash_id)
+
+        self.symbol_hash_map[hash_id] = contract.symbol
+
+        self.reqMarketDataType(1)
+        self.reqMktData(hash_id, contract, "", False, False, [])
+        #TODO: Push to service that can handle rendering
+        #TODO: Push to service that can retrieve market data
 
 
 def main():
@@ -95,18 +111,13 @@ def main():
 
     app.connect(host='127.0.0.1', port=TWS_PORT, clientId=0)
 
-    contract = Contract()
-    contract.symbol = 'CHWY'
-    contract.secType = 'STK'
-    contract.exchange = 'NYSE'
-    contract.currency = 'USD'
-
     app.reqPositions()
 
-    app.reqMarketDataType(1)
-    app.reqMktData(1, contract, "", False, False, [])
-
     app.run()
+
+    # pos = app.positions
+    # app.reqMarketDataType(1)
+    # app.reqMktData(1, contract, "", False, False, [])
 
 
 if __name__ == "__main__":
