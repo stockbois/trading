@@ -11,6 +11,7 @@ from ibapi.contract import Contract
 from ibapi.ticktype import TickTypeEnum
 
 from common.utils.logging import setupLogger
+from common.utils.ftp import retrieve_latest_batch
 
 
 class TestApp(EWrapper, EClient):
@@ -31,36 +32,28 @@ class TestApp(EWrapper, EClient):
         if errorCode != 2104:
             print("Error: ", reqId, " ", errorCode, " ", errorString)
 
-    # def start(self):
-    #     if self.started:
-    #         return
-    #     self.started = True
-
-    #     if self.global_cancel:
-    #         logging.info('executing global cancel')
-    #         self.reqGlobalCancel()
-    #     else:
-    #         logging.info('executing requests')
-    #         self.reqPositions()
-    #         self.reqAccountUpdates(True, self.account)
-
-    # def stop(self):
-    #     logging.info('stopping app')
-    #     self.reqAccountUpdates(False, '')
-    #     self.done = True
-    #     self.disconnect()
-
     def nextValidId(self, orderId: int):
         super().nextValidId(orderId)
         print('')
         logging.debug("setting next_valid_order_id: {o}".
                       format(o=orderId))
         self.next_valid_order_id = orderId
-        # self.start()
 
     def tickPrice(self, reqId, tickType, price, attrib):
+        symbol = self.symbol_hash_map[reqId]
         if price >= 0.0:
-            print("Tick Price.", self.symbol_hash_map[reqId], price)
+            payload = {
+                'current_price.price':  price,
+                'current_price.ts': datetime.datetime.now().strftime("%s")
+            }
+
+            self.db.collection(u'portfolio'). \
+                document(symbol). \
+                update(payload)
+
+
+    def tickSize(self, reqId, tickType, size):
+        pass
 
     def position(self, account, contract, position, avgCost):
         payload = {
@@ -82,6 +75,10 @@ class TestApp(EWrapper, EClient):
             },
             'audit': {
                 'ts': self.ts
+            },
+            'current_price': {
+                'price': None,
+                'ts': None
             }
         }
         self.db.collection(u'portfolio'). \
@@ -98,26 +95,22 @@ class TestApp(EWrapper, EClient):
 
         self.reqMarketDataType(1)
         self.reqMktData(hash_id, contract, "", False, False, [])
-        #TODO: Push to service that can handle rendering
-        #TODO: Push to service that can retrieve market data
 
 
 def main():
     setupLogger(logging_level=logging.INFO)
 
-    TWS_PORT = int(os.getenv('TWS_PORT'))
+    retrieve_latest_batch()
 
-    app = TestApp()
-
-    app.connect(host='127.0.0.1', port=TWS_PORT, clientId=0)
-
-    app.reqPositions()
-
-    app.run()
-
-    # pos = app.positions
-    # app.reqMarketDataType(1)
-    # app.reqMktData(1, contract, "", False, False, [])
+    # TWS_PORT = int(os.getenv('TWS_PORT'))
+    #
+    # app = TestApp()
+    #
+    # app.connect(host='127.0.0.1', port=TWS_PORT, clientId=0)
+    #
+    # app.reqPositions()
+    #
+    # app.run()
 
 
 if __name__ == "__main__":

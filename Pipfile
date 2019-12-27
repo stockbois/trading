@@ -10,6 +10,7 @@ google-cloud-firestore = "*"
 paramiko = "*"
 pylint = "*"
 autopep8 = "*"
+pandas = "*"
 
 [requires]
 python_version = "3.7"
