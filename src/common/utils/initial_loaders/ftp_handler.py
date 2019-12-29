@@ -7,6 +7,7 @@ import csv
 import pandas as pd
 import logging
 from common.utils.logging import setupLogger
+from common.utils.initial_loaders.ftp_file_headers import headers
 
 # Get config
 FTP_HOST = os.getenv('FTP_HOST')
@@ -63,18 +64,16 @@ def get_report_metadata(filename):
     return payload
 
 
-def process_report(report):
+def process_report(report, report_type):
     content = []
     with open(report, newline='') as f:
         file_data = csv.reader(f, delimiter='|')
         row_count = 0
         for row in file_data:
-            if row_count == 0:
-                headers = row
-            elif row_count > 0 and row[0][0] == 'U':
+            if row[0][0] == 'U':
                 content.append(row)
             row_count += 1
-        df = pd.DataFrame(data=content, columns=headers)
+        df = pd.DataFrame(data=content, columns=headers[report_type])
     return df.to_json(orient='records')
 
 
@@ -132,9 +131,12 @@ def retrieve_latest_batch():
         subprocess.call(run_str, shell=True)
 
     # Process the unencrypted files
+    data = {}
     for report in download_audit:
         path = LOCAL_DATA_DIR + '/unencryp/{file}'.format(
             file='.'.join(report.split('.')[:-1])
         )
-        data = process_report(path)
-        print(data)
+        report_type = path.split('.')[-4]
+        data[report_type] = process_report(path, report_type)
+
+    return data

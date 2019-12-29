@@ -1,4 +1,3 @@
-import os
 import logging
 import datetime
 import hashlib
@@ -7,11 +6,9 @@ from google.cloud import firestore
 
 from ibapi.client import EClient
 from ibapi.wrapper import EWrapper
-from ibapi.contract import Contract
-from ibapi.ticktype import TickTypeEnum
 
 from common.utils.logging import setupLogger
-from common.utils.ftp import retrieve_latest_batch
+from common.utils.initial_loaders.ftp_handler import retrieve_latest_batch
 
 
 class TestApp(EWrapper, EClient):
@@ -100,17 +97,26 @@ class TestApp(EWrapper, EClient):
 def main():
     setupLogger(logging_level=logging.INFO)
 
-    retrieve_latest_batch()
+    # Retrieve latest FTP data
+    try:
+        ftp_data = retrieve_latest_batch()
+        logging.info('FTP data retrieved successfully')
 
-    # TWS_PORT = int(os.getenv('TWS_PORT'))
-    #
-    # app = TestApp()
-    #
-    # app.connect(host='127.0.0.1', port=TWS_PORT, clientId=0)
-    #
-    # app.reqPositions()
-    #
-    # app.run()
+        for i in ftp_data["PnLDetails"]:
+            print(i["symbol"])
+
+    except:
+        Exception('Unable to retrieve latest batch from FTP')
+
+    # # Run TWS Client
+    # try:
+    #     TWS_PORT = int(os.getenv('TWS_PORT'))
+    #     app = TestApp()
+    #     app.connect(host='127.0.0.1', port=TWS_PORT, clientId=0)
+    #     app.reqPositions()
+    #     app.run()
+    # except:
+    #     Exception('Unable to run TWS client')
 
 
 if __name__ == "__main__":
