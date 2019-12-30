@@ -18,6 +18,7 @@ GPG_PASSWORD = os.getenv('GPG_PASSWORD')
 FTP_WORKING_DIR = 'outgoing'
 LOCAL_GNUPGHOME_DIR = os.getenv('LOCAL_GNUPGHOME_DIR')
 LOCAL_DATA_DIR = os.getenv('LOCAL_DATA_DIR')
+GCP_STORAGE_BUCKET = os.getenv('GCP_STORAGE_BUCKET')
 
 
 def convert_date_from_int(date_input):
@@ -135,8 +136,8 @@ def retrieve_latest_batch():
         run_str = f'gpg -d --pinentry-mode=loopback --passphrase {GPG_PASSWORD} --output {decryp_fp} {encryp_fp}'
         subprocess.call(run_str, shell=True)
         # Upload both unencryp and decryp files to google cloud bucket
-        upload_file('carminatiio-tradevue', encryp_fp, f'ibkr-ftp/encryp/{encryp_f}')
-        upload_file('carminatiio-tradevue', decryp_fp, f'ibkr-ftp/decryp/{decryp_f}')
+        upload_file(GCP_STORAGE_BUCKET, encryp_fp, f'ibkr-ftp/encryp/{encryp_f}')
+        upload_file(GCP_STORAGE_BUCKET, decryp_fp, f'ibkr-ftp/decryp/{decryp_f}')
         # Generate metadata for unencrypted output
         file_split = decryp_f.split('.')
         report_type = file_split[-4]
