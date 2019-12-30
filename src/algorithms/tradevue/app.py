@@ -97,13 +97,10 @@ class TestApp(EWrapper, EClient):
 def main():
     setupLogger(logging_level=logging.INFO)
 
-    # Retrieve latest FTP data
+    # Retrieve latest FTP data and post to firebase
     try:
         ftp_data = retrieve_latest_batch()
         logging.info('FTP data retrieved successfully')
-
-        for i in ftp_data["PnLDetails"]:
-            print(i["symbol"])
 
     except:
         Exception('Unable to retrieve latest batch from FTP')
