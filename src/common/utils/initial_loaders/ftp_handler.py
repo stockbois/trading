@@ -6,6 +6,7 @@ import subprocess
 import csv
 import pandas as pd
 import logging
+from common.utils.storage import upload_file
 from common.utils.logging import setupLogger
 from common.utils.initial_loaders.ftp_file_headers import headers
 
@@ -98,16 +99,17 @@ def retrieve_latest_batch():
         'TradeConfirmExecutions'
     ]
 
-    download_audit = []
+    encrypted_file_downloads = []
 
-    # Download encrypted files from FTP server
+    # Download most recent encrypted files from FTP server
     for report_type in report_types:
         report = get_most_recent_file(files, report_type)
 
         try:
             with open(LOCAL_DATA_DIR + '/encryp' + '/' + report, 'wb') as f:
                 ftp.retrbinary('RETR ' + report, f.write)
-            download_audit.append(report)
+            logging.info(f'Downloaded {report} from FTP server')
+            encrypted_file_downloads.append(report)
         except:
             print("Error downloading {f}".format(f=report))
 
@@ -119,24 +121,33 @@ def retrieve_latest_batch():
     run_str = f'rm -rf {unencryp_folder_contents}'
     subprocess.call(run_str, shell=True)
 
-    # Decrypt files in decryp folder and drop in unencryp folder
-    for report in download_audit:
-
-        encryp_f = LOCAL_DATA_DIR + '/encryp/{file}'.format(file=report)
-        decryp_f = LOCAL_DATA_DIR + '/unencryp/{file}'.format(
-            file='.'.join(report.split('.')[:-1])
-        )
-
-        run_str = f'gpg -d --pinentry-mode=loopback --passphrase {GPG_PASSWORD} --output {decryp_f} {encryp_f}'
-        subprocess.call(run_str, shell=True)
-
-    # Process the unencrypted files
     data = {}
-    for report in download_audit:
-        path = LOCAL_DATA_DIR + '/unencryp/{file}'.format(
-            file='.'.join(report.split('.')[:-1])
-        )
-        report_type = path.split('.')[-4]
-        data[report_type] = process_report(path, report_type)
+
+    # Decrypt files in decryp folder and drop in unencryp folder
+    for encrypted_download in encrypted_file_downloads:
+        # Get filenames
+        encryp_f = encrypted_download
+        decryp_f = '.'.join(encrypted_download.split('.')[:-1])
+        # Use filenames to get local filepaths
+        encryp_fp = LOCAL_DATA_DIR + f'/encryp/{encryp_f}'
+        decryp_fp = LOCAL_DATA_DIR + f'/unencryp/{decryp_f}'
+        # Run decrypt subprocess
+        run_str = f'gpg -d --pinentry-mode=loopback --passphrase {GPG_PASSWORD} --output {decryp_fp} {encryp_fp}'
+        subprocess.call(run_str, shell=True)
+        # Upload both unencryp and decryp files to google cloud bucket
+        upload_file('carminatiio-tradevue', encryp_fp, f'ibkr-ftp/encryp/{encryp_f}')
+        upload_file('carminatiio-tradevue', decryp_fp, f'ibkr-ftp/decryp/{decryp_f}')
+        # Generate metadata for unencrypted output
+        file_split = decryp_f.split('.')
+        report_type = file_split[-4]
+        from_date = file_split[-3]
+        to_date = file_split[-2]
+        # Append to data out object (dict)
+        data[report_type] = {}
+        data[report_type]['metadata'] = {
+            'from_date': from_date,
+            'to_date': to_date
+        }
+        data[report_type]['data'] = process_report(decryp_fp, report_type)
 
     return data
