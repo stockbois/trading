@@ -1,14 +1,10 @@
 import os
-import datetime
 from ftplib import FTP
-from operator import itemgetter
 import subprocess
-import csv
-import pandas as pd
 import logging
 from common.utils.storage import upload_file
 from common.utils.logging import setupLogger
-from common.utils.initial_loaders.ftp_file_headers import headers
+from common.utils.ftp_handler.helpers import get_current_files, process_report
 
 # Get config
 FTP_HOST = os.getenv('FTP_HOST')
@@ -21,65 +17,7 @@ LOCAL_DATA_DIR = os.getenv('LOCAL_DATA_DIR')
 GCP_STORAGE_BUCKET = os.getenv('GCP_STORAGE_BUCKET')
 
 
-def convert_date_from_int(date_input):
-    year = int(date_input[:4])
-    month = int(date_input[4:6])
-    day = int(date_input[6:8])
-    date = datetime.date(year, month, day)
-    return date
-
-
-def get_account_list(files):
-    accounts = []
-    for f in files:
-        account = f.split('.')[0]
-        if account not in accounts:
-            accounts.append(account)
-    return accounts
-
-
-def get_most_recent_file(file_list, file_type):
-    relevant_files = []
-    for record in file_list:
-        if file_type in record:
-            file_end_date = convert_date_from_int(record.split('.')[3])
-            tupe = (record, file_end_date)
-            relevant_files.append(tupe)
-    most_recent_file = max(relevant_files, key=itemgetter(1))[0]
-    return most_recent_file
-
-
-def get_report_metadata(filename):
-    report_account = filename.split('.')[0]
-    report_type = filename.split('.')[1]
-    report_from_date = filename.split('.')[2]
-    report_to_date = filename.split('.')[3]
-
-    payload = {
-        'file': filename,
-        'account': report_account,
-        'type': report_type,
-        'report_start': report_from_date,
-        'report_end': report_to_date
-    }
-
-    return payload
-
-
-def process_report(report, report_type):
-    content = []
-    with open(report, newline='') as f:
-        file_data = csv.reader(f, delimiter='|')
-        row_count = 0
-        for row in file_data:
-            if row[0][0] == 'U':
-                content.append(row)
-            row_count += 1
-        df = pd.DataFrame(data=content, columns=headers[report_type])
-    return df.to_json(orient='records')
-
-
-def retrieve_latest_batch():
+def run():
     setupLogger(logging_level=logging.INFO)
 
     # Login to FTP and navigate to working directory
@@ -92,27 +30,19 @@ def retrieve_latest_batch():
     # Get the full list of files in the directory
     files = ftp.nlst()
 
-    # Specify desired report types and download the most recent of each
-    report_types = [
-        'CashReport',
-        'OpenPositions',
-        'PnLDetails',
-        'TradeConfirmExecutions'
-    ]
-
     encrypted_file_downloads = []
 
     # Download most recent encrypted files from FTP server
-    for report_type in report_types:
-        report = get_most_recent_file(files, report_type)
+    current_files = get_current_files(files)
 
+    for current_file in current_files:
         try:
-            with open(LOCAL_DATA_DIR + '/encryp' + '/' + report, 'wb') as f:
-                ftp.retrbinary('RETR ' + report, f.write)
-            logging.info(f'Downloaded {report} from FTP server')
-            encrypted_file_downloads.append(report)
+            with open(LOCAL_DATA_DIR + '/encryp/' + current_file, 'wb') as f:
+                ftp.retrbinary('RETR ' + current_file, f.write)
+            logging.info(f'Downloaded {current_file} from FTP server')
+            encrypted_file_downloads.append(current_file)
         except:
-            print("Error downloading {f}".format(f=report))
+            print("Error downloading {f}".format(f=current_file))
 
     # Be polite - close the connection
     ftp.quit()
