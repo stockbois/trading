@@ -2,6 +2,7 @@ import datetime
 from operator import itemgetter
 import csv
 import pandas as pd
+from google.cloud import storage
 from common.data_handler.ftp_file_headers import headers
 
 
@@ -14,7 +15,7 @@ def get_report_metadata(filename):
 
     payload = {
         'file': filename,
-        'account': report_account,
+        # 'account': report_account,
         'type': report_type,
         'report_start': report_from_date,
         'report_end': report_to_date
@@ -76,11 +77,10 @@ def get_current_files(file_list: list, exclude_type: list = None, use_full_hist:
         current_file = '.'.join(max(tmp, key=itemgetter(3)))
         current_files.append(current_file)  # TODO: test once 2020 files are uploaded
 
-    print(current_files)
-    return current_files
+    return sorted(current_files)
 
 
-def process_report(report, report_type):
+def get_report_data(report, report_type):
     content = []
     with open(report, newline='') as f:
         file_data = csv.reader(f, delimiter='|')
@@ -91,3 +91,22 @@ def process_report(report, report_type):
             row_count += 1
         df = pd.DataFrame(data=content, columns=headers[report_type])
     return df.to_json(orient='records')
+
+
+def upload_file_to_gcp(bucket_name, source_file_name, destination_blob_name):
+    """Uploads a file to the bucket."""
+    # bucket_name = "your-bucket-name"
+    # source_file_name = "local/path/to/file"
+    # destination_blob_name = "storage-object-name"
+
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(destination_blob_name)
+
+    blob.upload_from_filename(source_file_name)
+
+    print(
+        "File {} uploaded to {}.".format(
+            source_file_name, destination_blob_name
+        )
+    )
