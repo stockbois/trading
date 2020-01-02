@@ -2,7 +2,7 @@ import datetime
 from operator import itemgetter
 import csv
 import pandas as pd
-from common.utils.ftp_handler.file_headers import headers
+from common.data_handler.ftp_file_headers import headers
 
 
 def get_report_metadata(filename):

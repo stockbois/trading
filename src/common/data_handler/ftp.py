@@ -4,7 +4,7 @@ import subprocess
 import logging
 from common.utils.storage import upload_file
 from common.utils.logging import setupLogger
-from common.utils.ftp_handler.helpers import get_current_files, process_report
+from common.data_handler.ftp_helpers import get_current_files, process_report
 
 # Get config
 FTP_HOST = os.getenv('FTP_HOST')
@@ -17,7 +17,7 @@ LOCAL_DATA_DIR = os.getenv('LOCAL_DATA_DIR')
 GCP_STORAGE_BUCKET = os.getenv('GCP_STORAGE_BUCKET')
 
 
-def run():
+def get_data():
     setupLogger(logging_level=logging.INFO)
 
     # Login to FTP and navigate to working directory

@@ -8,7 +8,7 @@ from ibapi.client import EClient
 from ibapi.wrapper import EWrapper
 
 from common.utils.logging import setupLogger
-from common.utils.ftp_handler import initial_loader
+from common.data_handler import ftp
 
 
 class TestApp(EWrapper, EClient):
@@ -99,7 +99,7 @@ def main():
 
     # Retrieve latest FTP data and post to firebase
     try:
-        ftp_data = initial_loader.run()
+        ftp_data = ftp.get_data()
         logging.info('FTP data retrieved successfully')
 
     except:
