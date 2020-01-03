@@ -36,6 +36,10 @@ class TestApp(EWrapper, EClient):
                       format(o=orderId))
         self.next_valid_order_id = orderId
 
+    def tickString(self, reqId, tickType, value: str):
+        symbol = self.symbol_hash_map[reqId]
+        print(symbol, value)
+
     def tickPrice(self, reqId, tickType, price, attrib):
         symbol = self.symbol_hash_map[reqId]
         if price >= 0.0:
@@ -48,6 +52,7 @@ class TestApp(EWrapper, EClient):
                 document(symbol). \
                 update(payload)
 
+            print(symbol, price)
 
     def tickSize(self, reqId, tickType, size):
         pass
@@ -105,15 +110,16 @@ def main():
     except:
         Exception('Unable to retrieve latest batch from FTP')
 
-    # # Run TWS Client
-    # try:
-    #     TWS_PORT = int(os.getenv('TWS_PORT'))
-    #     app = TestApp()
-    #     app.connect(host='127.0.0.1', port=TWS_PORT, clientId=0)
-    #     app.reqPositions()
-    #     app.run()
-    # except:
-    #     Exception('Unable to run TWS client')
+    # Run TWS Client
+    try:
+        import os
+        TWS_PORT = int(os.getenv('TWS_PORT'))
+        app = TestApp()
+        app.connect(host='127.0.0.1', port=TWS_PORT, clientId=0)
+        app.reqPositions()
+        app.run()
+    except:
+        Exception('Unable to run TWS client')
 
 
 if __name__ == "__main__":
