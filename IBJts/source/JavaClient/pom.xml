@@ -10,7 +10,7 @@
     </properties>
 
     <build>
-        <sourceDirectory>.</sourceDirectory>
+        <sourceDirectory></sourceDirectory>
         <directory>build</directory>
 
         <plugins>

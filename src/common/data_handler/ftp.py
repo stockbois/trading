@@ -67,17 +67,12 @@ def get_data():
         report_metadata = get_report_metadata(decryp_f)
         report_type = report_metadata['type']
 
-        print('----')
         try:
             data[report_type]['data'].extend(get_report_data(decryp_fp, report_type))
             data[report_type]['metadata'] = get_report_metadata(decryp_f)
-            print('aaa')
         except KeyError:
             data[report_type] = {}
             data[report_type]['data'] = get_report_data(decryp_fp, report_type)
             data[report_type]['metadata'] = get_report_metadata(decryp_f)
-            print('bbb')
-
-    print(data["OpenPositions"]["data"])
 
     return data
