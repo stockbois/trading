@@ -16,12 +16,6 @@ download_audit = []
 data = {}
 
 
-def thing_exists(obj, chain):
-    _key = chain.pop(0)
-    if _key in obj:
-        return thing_exists(obj[_key], chain) if chain else obj[_key]
-
-
 def get_data():
     # Login to FTP and navigate to working directory
     logging.info('Running FTP processing script')
@@ -69,21 +63,21 @@ def get_data():
         upload_file_to_gcp(GCP_STORAGE_BUCKET, encryp_fp, f'ibkr-ftp/encryp/{encryp_f}')
         upload_file_to_gcp(GCP_STORAGE_BUCKET, decryp_fp, f'ibkr-ftp/decryp/{decryp_f}')
 
-        # Generate metadata for unencrypted output
+        # Append to data out object (dict)
         report_metadata = get_report_metadata(decryp_f)
         report_type = report_metadata['type']
 
-        # Append to data out object (dict)
-        data[report_type] = {}
-        data[report_type]['metadata'] = get_report_metadata(decryp_f)
         print('----')
-        if thing_exists(data, [report_type, 'data']):
-            print('aaaa')
-            print(get_report_data(decryp_fp, report_type))
-            data[report_type]['data'].append(get_report_data(decryp_fp, report_type))
-        else:
-            print('bbbb')
+        try:
+            data[report_type]['data'].extend(get_report_data(decryp_fp, report_type))
+            data[report_type]['metadata'] = get_report_metadata(decryp_f)
+            print('aaa')
+        except KeyError:
+            data[report_type] = {}
             data[report_type]['data'] = get_report_data(decryp_fp, report_type)
-        print(data[report_type]['metadata'])
+            data[report_type]['metadata'] = get_report_metadata(decryp_f)
+            print('bbb')
+
+    print(data["OpenPositions"]["data"])
 
     return data

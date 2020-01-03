@@ -90,7 +90,7 @@ def get_report_data(report, report_type):
                 content.append(row)
             row_count += 1
         df = pd.DataFrame(data=content, columns=headers[report_type])
-    return df.to_json(orient='records')
+    return df.to_dict(orient='records')
 
 
 def upload_file_to_gcp(bucket_name, source_file_name, destination_blob_name):
