@@ -12,6 +12,7 @@ pylint = "*"
 autopep8 = "*"
 pandas = "*"
 google-cloud-storage = "*"
+flask-socketio = "*"
 
 [requires]
 python_version = "3.7"

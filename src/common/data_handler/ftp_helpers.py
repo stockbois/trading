@@ -2,8 +2,9 @@ import datetime
 from operator import itemgetter
 import csv
 import pandas as pd
+import numpy as np
 from google.cloud import storage
-from common.data_handler.ftp_file_headers import headers
+from common.data_handler.ftp_file_meta import headers, dtypes
 
 
 def get_report_metadata(filename):
@@ -75,7 +76,7 @@ def get_current_files(file_list: list, exclude_type: list = None, use_full_hist:
             if dist_type == report_type and dist_year == year and dist_type not in exclude_type:
                 tmp.append(file)
         current_file = '.'.join(max(tmp, key=itemgetter(3)))
-        current_files.append(current_file)  # TODO: test once 2020 files are uploaded
+        current_files.append(current_file)
 
     return sorted(current_files)
 
@@ -89,7 +90,16 @@ def get_report_data(report, report_type):
             if row[0][0] == 'U':
                 content.append(row)
             row_count += 1
-        df = pd.DataFrame(data=content, columns=headers[report_type])
+        df = pd.DataFrame(
+            data=content,
+            columns=headers[report_type],
+        )
+        if report_type == "CashReport":
+            df["amount"] = df["amount"].astype(np.double)
+            # df[["report_date", "settle_date"]] = df[["report_date", "settle_date"]].astype(
+            #     'datetime64[ns]'
+            # )
+            print(df.dtypes)
     return df.to_dict(orient='records')
 
 

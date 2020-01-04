@@ -75,9 +75,6 @@ class TestApp(EWrapper, EClient):
                 'avg_cost': avgCost,
                 'cost_basis': position * avgCost,
             },
-            'audit': {
-                'ts': self.ts
-            },
             'current_price': {
                 'price': None,
                 'ts': None

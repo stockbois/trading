@@ -152,3 +152,21 @@ headers = {
         'accrued_interest'
     ]
 }
+
+dtypes = {
+    "CashReport": {
+        'account_id': str,
+        'account_alias': str,
+        'datetime': str,
+        'description': str,
+        'primary_currency': str,
+        'amount': float,
+        'type': str,
+        'transaction_id': str,
+        'report_date': str,
+        'settle_date': str
+    },
+    "OpenPositions": {},
+    "PnLDetails": {},
+    "TradeConfirmExecutions": {}
+}
