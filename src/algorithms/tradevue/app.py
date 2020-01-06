@@ -10,6 +10,8 @@ from ibapi.wrapper import EWrapper
 from common.utils.logging import setupLogger
 from common.data_handler import ftp
 
+db = firestore.Client()
+
 
 class TestApp(EWrapper, EClient):
     def __init__(self):
@@ -23,7 +25,7 @@ class TestApp(EWrapper, EClient):
         self.positions = {}
         self.contracts = []
         self.symbol_hash_map = {}
-        self.db = firestore.Client()
+        # self.db = firestore.Client()
 
     def error(self, reqId, errorCode, errorString):
         if errorCode != 2104:
@@ -48,7 +50,7 @@ class TestApp(EWrapper, EClient):
                 'current_price.ts': datetime.datetime.now().strftime("%s")
             }
 
-            self.db.collection(u'portfolio'). \
+            db.collection(u'portfolio'). \
                 document(symbol). \
                 update(payload)
 
@@ -80,7 +82,7 @@ class TestApp(EWrapper, EClient):
                 'ts': None
             }
         }
-        self.db.collection(u'portfolio'). \
+        db.collection(u'portfolio'). \
             document(contract.symbol). \
             set(payload)
 
@@ -103,6 +105,9 @@ def main():
     try:
         ftp_data = ftp.get_data()
         logging.info('FTP data retrieved successfully')
+
+        for report_type in ftp_data.keys():
+            db.collection('static').document(report_type).set(ftp_data[report_type])
 
     except:
         Exception('Unable to retrieve latest batch from FTP')
