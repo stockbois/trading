@@ -100,6 +100,7 @@ def get_report_data(report, report_type):
             #     'datetime64[ns]'
             # )
             print(df.dtypes)
+        #TODO: Convert/CAST the datatypes for all reports before handing off
     return df.to_dict(orient='records')
 
 
