@@ -29,7 +29,8 @@ def get_data():
 
     # Download most recent encrypted files from FTP server
     current_files = get_current_files(files)
-    logging.info(f'Downloading the following files from FTP: {str(current_files)}')
+    for i in current_files:
+        logging.info(f'Downloading from FTP: {i}')
 
     for current_file in current_files:
         try:
