@@ -95,12 +95,75 @@ def get_report_data(report, report_type):
             columns=headers[report_type],
         )
         if report_type == "CashReport":
-            df["amount"] = df["amount"].astype(np.double)
-            # df[["report_date", "settle_date"]] = df[["report_date", "settle_date"]].astype(
-            #     'datetime64[ns]'
-            # )
+            # Set Dates
+            df[[
+                "datetime",
+                "report_date",
+                "settle_date"
+            ]] = df[[
+                "datetime",
+                "report_date",
+                "settle_date"
+            ]].astype('datetime64[ns]')
+            # Set Doubles
+            df[[
+                "amount"
+            ]] = df[[
+                "amount"
+            ]].astype(np.double)
             print(df.dtypes)
-        #TODO: Convert/CAST the datatypes for all reports before handing off
+        elif report_type == "OpenPositions":
+            # Set Dates
+            df[["report_date"]] = df[[
+                "report_date"
+            ]].astype('datetime64[ns]')
+            # Set Doubles
+            df[[
+                "fx_rate_to_base",
+                "multiplier",
+                "quantity",
+                "mark_price",
+                "position_value",
+                "open_price",
+                "cost_basis_price",
+                "cost_basis_money",
+                "percent_of_nav",
+                "fifo_pnl_unrealized"
+            ]] = df[[
+                "fx_rate_to_base",
+                "multiplier",
+                "quantity",
+                "mark_price",
+                "position_value",
+                "open_price",
+                "cost_basis_price",
+                "cost_basis_money",
+                "percent_of_nav",
+                "fifo_pnl_unrealized"
+            ]].astype(np.double)
+            print(df.dtypes)
+        elif report_type == "PnLDetails":
+            # TODO: Convert/CAST the datatypes for PnLDetails
+            # Set Dates
+            # df[[""]] = df[[
+            #     ""
+            # ]].astype('datetime64[ns]')
+            # Set Doubles
+            # df[""] = df[[
+            #     ""
+            # ]].astype(np.double)
+            print(df.dtypes)
+        elif report_type == "TradeConfirmExecutions":
+            # TODO: Convert/CAST the datatypes for TradeConfirmExecutions
+            # Set Dates
+            # df[[""]] = df[[
+            #     ""
+            # ]].astype('datetime64[ns]')
+            # Set Doubles
+            # df[""] = df[[
+            #     ""
+            # ]].astype(np.double)
+            print(df.dtypes)
     return df.to_dict(orient='records')
 
 
