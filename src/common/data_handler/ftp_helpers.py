@@ -149,9 +149,11 @@ def get_report_data(report, report_type):
             #     ""
             # ]].astype('datetime64[ns]')
             # Set Doubles
-            # df[""] = df[[
-            #     ""
-            # ]].astype(np.double)
+            df[[
+                "multiplier"
+            ]] = df[[
+                "multiplier"
+            ]].astype(np.double)
             print(df.dtypes)
         elif report_type == "TradeConfirmExecutions":
             # TODO: Convert/CAST the datatypes for TradeConfirmExecutions
